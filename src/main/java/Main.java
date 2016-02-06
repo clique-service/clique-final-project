@@ -14,8 +14,8 @@ public class Main {
 			vertx.result().deployVerticle(new UserInitHandler());
 			
 			JsonObject data = new JsonObject();
-			data.put("accessToken", "CAAGC5hXd3tABADW2TTDcMSVZC8fJoyhY1uhrlaKgaYVuRZAPi5NtnAOxvskebduh2uIvXrlAS5f8zR7S28xRpnlo2iRWz0YBSdxvJNsaDMt9tQgoW5rMo1gSzOZBc0gZABjQZADxItoEIj9YhL0t5LGF4vjpopOVonDGZADphmTy9uI2uH2XPHGtTau8PtN5IcOXE3Ji4kMwZDZD");
-			data.put("userId", "525255530980979");
+			data.put("accessToken", "CAAGC5hXd3tABAP7HkI2zzT9XD2ZAf6nODx9qrZBgaw22GD8X9HyjBXapNgv1ekwgRhd9NOHk2rbQpSZCPtnrmhLdwzSc2kg0fvrFufMqeOcPbQ1zRF7MPN89m4fjMyqHwzaZCsXsF9dazQU6TOv9V0Bgxp8pZCLDQg9M9Gf0iL9dCPkWZAM0dhuf7pCXr0bx7ZCszReSGLC4ItNiR0ZBZAxzlREu1MWjVaB8ZD");
+			data.put("userId", "10153853686382962");
 			vertx.result().eventBus().send("userToken", data);
 		});
 	}
