@@ -31,6 +31,8 @@ public class UserInitHandler extends AbstractVerticle {
 					data.put("after", "");
 
 					vertx.eventBus().send("userLikes", data);
+					vertx.eventBus().send("userEvents", data);
+					vertx.eventBus().send("userTaggedPlaces", data);
 				});
 			});
 		});
@@ -46,8 +48,8 @@ public class UserInitHandler extends AbstractVerticle {
 
 		userData.put("events", new JsonArray());
 		userData.put("likes", new JsonArray());
-		userData.put("tagged_places", new JsonArray());
-
+		userData.put("places", new JsonArray());
+		
 		r.table("Users").insert(JsonToPureJava.toJava(userData)).optArg("conflict", "replace").run(DBConfig.get());
 	}
 }
