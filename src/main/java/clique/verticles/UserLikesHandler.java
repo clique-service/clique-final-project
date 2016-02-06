@@ -15,18 +15,30 @@ public class UserLikesHandler extends Handler {
 	public void save(JsonObject data, Message<JsonObject> message) {
 		JsonArray jsonArray = data.getJsonArray("data");
 		int size = jsonArray.size();
+		String accessToken = message.body().getString("accessToken");
 
 		if (size != 0) {
 			List<String> likeIds = new ArrayList<>();
 			List<String> categories = new ArrayList<>();
 			
 			jsonArray.stream().forEach(like -> {
-				likeIds.add(((JsonObject) like).getString("id"));
+				JsonObject likeData = new JsonObject();
+				
+				String likeId = ((JsonObject) like).getString("id");
+				likeIds.add(likeId);
 				String category = ((JsonObject) like).getString("category");
 
 				if (category != null && !category.isEmpty()) {
 					categories.add(category.toLowerCase());
 				}
+				
+				likeData.put("accessToken", accessToken);
+				likeData.put("likeId", likeId);
+				likeData.put("after", "");
+				likeData.put("category", category);
+				
+				//vertx.eventBus().send("likePosts", likeData);
+
 			});
 
 			r.table("Users").get(message.body().getString("userId"))

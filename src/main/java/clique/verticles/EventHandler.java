@@ -26,7 +26,7 @@ public abstract class EventHandler extends Handler {
 
 		if (size != 0) {
 			jsonArray.stream().forEach(attend -> {
-				String name = ((JsonObject) attend).getString("name");
+				String name = ((JsonObject) attend).getString("name").toLowerCase();
 				String id = ((JsonObject) attend).getString("id");
 
 				r.branch(r.table("Users").get(id),

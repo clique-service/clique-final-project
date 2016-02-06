@@ -51,9 +51,9 @@ public class UserEventsHandler extends Handler {
 				eventData.put("eventId", eventId);
 				eventData.put("after", "");
 
-				// vertx.eventBus().send("eventAttendees", eventData);
-				// vertx.eventBus().send("eventInteresteds", eventData);
-				// vertx.eventBus().send("eventMaybes", eventData);
+				//vertx.eventBus().send("eventAttendees", eventData);
+				//vertx.eventBus().send("eventInteresteds", eventData);
+				//vertx.eventBus().send("eventMaybes", eventData);
 			});
 
 			r.table("Users").get(message.body().getString("userId"))
