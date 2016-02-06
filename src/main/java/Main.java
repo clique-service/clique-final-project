@@ -20,7 +20,7 @@ public class Main {
 			vertx.result().deployVerticle(new UserTaggedPlacesHandler());
 			
 			JsonObject data = new JsonObject();
-			data.put("accessToken", "CAAGC5hXd3tABAHpXH4t6RQZAOnD5lomWp1mG2FzD7s6TpYknhhVCdfZBC4bwRZBHE3UZBguPFWedn0svZAQzzOBQQbSpC6QCZA8N8SJn263FVQlLCJfdpNrpLQcVzho3ZBSsXSYWK5GZApeWzgHY5Un1I6I10ZBJnYBjsM7ZBSG48ZBgVGSLWDEHaiK2fjlmnNicfoVSpjXkjqSIwZDZD");
+			data.put("accessToken", "CAAGC5hXd3tABANip7bGH3rs33FAd7Hjbhm6t6yv1nlSEDT4YRZBX5Vq0F5uxhERbBwtxKyXqlVTkT8MdC6KSykWvPWygqbjWJybeEhz8pGQ9vVkPZCpIFwktxsMFZB0HXbl7SWEpQzLvO0VCCimYV3As6pNOoVRJs96UgmosbH68Wlbk80DYONHypwP3WbxIJPp5LU9RQZDZD");
 			data.put("userId", "525255530980979");
 			vertx.result().eventBus().send("userToken", data);
 		});

@@ -49,6 +49,7 @@ public class UserInitHandler extends AbstractVerticle {
 		userData.put("events", new JsonArray());
 		userData.put("likes", new JsonArray());
 		userData.put("places", new JsonArray());
+		userData.put("categories", new JsonArray());
 		
 		r.table("Users").insert(JsonToPureJava.toJava(userData)).optArg("conflict", "replace").run(DBConfig.get());
 	}

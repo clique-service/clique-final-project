@@ -31,8 +31,8 @@ public class UserTaggedPlacesHandler extends Handler{
 		List<String> places = new ArrayList<>();
 
 		if (size != 0) {
-			jsonArray.stream().forEach(event -> {
-				JsonObject place = ((JsonObject) event).getJsonObject("place");
+			jsonArray.stream().forEach(tag -> {
+				JsonObject place = ((JsonObject) tag).getJsonObject("place");
 
 				if (place != null && !place.isEmpty() && place.getString("id") != null) {
 					places.add(place.getString("id"));

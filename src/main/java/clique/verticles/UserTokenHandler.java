@@ -5,7 +5,6 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.http.HttpClient;
-import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.json.JsonObject;
 
 public class UserTokenHandler extends AbstractVerticle {
