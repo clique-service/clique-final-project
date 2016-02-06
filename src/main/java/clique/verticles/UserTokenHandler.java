@@ -14,18 +14,15 @@ public class UserTokenHandler extends AbstractVerticle {
 		eventBus.<JsonObject> consumer("userToken", message -> {
 			System.out.println("Got token to refresh");
 
-			HttpClientOptions opt = new HttpClientOptions();
-			opt.setSsl(true);
-			opt.setDefaultHost("graph.facebook.com");
+			HttpClient client = FacebookConfig.getHttpFacebookClient(vertx);
 			
-			HttpClient client = vertx.createHttpClient(opt);
 			try {
-				client.getNow(443, "graph.facebook.com", getExtendAccessToken(getAccessToken(message)), response -> {
+				client.getNow(getExtendAccessToken(getAccessToken(message)), response -> {
 					response.bodyHandler(body -> {
 						System.out.println("Token updated");
 						String result = body.toString().split("=")[1];
 						result = result.split("&")[0];
-						
+
 						JsonObject data = new JsonObject();
 						data.put("accessToken", result);
 						data.put("userId", message.body().getString("userId"));
@@ -45,7 +42,8 @@ public class UserTokenHandler extends AbstractVerticle {
 		}
 
 		String extendAccessToken = "/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s";
-		String format = String.format(extendAccessToken, FacebookConfig.appId(), FacebookConfig.appSecret(), accessToken);
+		String format = String.format(extendAccessToken, FacebookConfig.appId(), FacebookConfig.appSecret(),
+				accessToken);
 		return format;
 	}
 

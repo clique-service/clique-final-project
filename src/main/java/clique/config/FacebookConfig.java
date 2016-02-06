@@ -1,8 +1,8 @@
 package clique.config;
 
-import java.util.function.Function;
-
+import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
+import io.vertx.core.http.HttpClientOptions;
 
 public class FacebookConfig {
 	public static String appId() {
@@ -21,5 +21,14 @@ public class FacebookConfig {
 		String sep = query.contains("?") ? "&" : "?";
 
 		return "/v2.5/" + query + sep + "access_token=" + accessToken;
+	}
+	
+	public static HttpClient getHttpFacebookClient(Vertx vertx)
+	{
+		HttpClientOptions opt = new HttpClientOptions();
+		opt.setDefaultPort(443);
+		opt.setSsl(true);
+		opt.setDefaultHost("graph.facebook.com");
+		return vertx.createHttpClient(opt);
 	}
 }

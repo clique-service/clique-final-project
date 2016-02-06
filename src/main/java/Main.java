@@ -1,4 +1,5 @@
 import clique.verticles.UserInitHandler;
+import clique.verticles.UserLikesHandler;
 import clique.verticles.UserTokenHandler;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
@@ -12,10 +13,11 @@ public class Main {
 		Vertx.clusteredVertx(new VertxOptions().setClustered(true).setBlockedThreadCheckInterval(1000*60*60), vertx -> {
 			vertx.result().deployVerticle(new UserTokenHandler());
 			vertx.result().deployVerticle(new UserInitHandler());
+			vertx.result().deployVerticle(new UserLikesHandler());
 			
 			JsonObject data = new JsonObject();
-			data.put("accessToken", "CAAGC5hXd3tABAP7HkI2zzT9XD2ZAf6nODx9qrZBgaw22GD8X9HyjBXapNgv1ekwgRhd9NOHk2rbQpSZCPtnrmhLdwzSc2kg0fvrFufMqeOcPbQ1zRF7MPN89m4fjMyqHwzaZCsXsF9dazQU6TOv9V0Bgxp8pZCLDQg9M9Gf0iL9dCPkWZAM0dhuf7pCXr0bx7ZCszReSGLC4ItNiR0ZBZAxzlREu1MWjVaB8ZD");
-			data.put("userId", "10153853686382962");
+			data.put("accessToken", "CAAGC5hXd3tABAHpXH4t6RQZAOnD5lomWp1mG2FzD7s6TpYknhhVCdfZBC4bwRZBHE3UZBguPFWedn0svZAQzzOBQQbSpC6QCZA8N8SJn263FVQlLCJfdpNrpLQcVzho3ZBSsXSYWK5GZApeWzgHY5Un1I6I10ZBJnYBjsM7ZBSG48ZBgVGSLWDEHaiK2fjlmnNicfoVSpjXkjqSIwZDZD");
+			data.put("userId", "525255530980979");
 			vertx.result().eventBus().send("userToken", data);
 		});
 	}
