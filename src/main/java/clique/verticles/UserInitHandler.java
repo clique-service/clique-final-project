@@ -1,15 +1,14 @@
 package clique.verticles;
 
-import static com.rethinkdb.RethinkDB.r;
-
 import clique.config.DBConfig;
 import clique.config.FacebookConfig;
 import clique.helpers.JsonToPureJava;
 import io.vertx.core.AbstractVerticle;
-import io.vertx.core.eventbus.Message;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
+
+import static com.rethinkdb.RethinkDB.r;
 
 public class UserInitHandler extends AbstractVerticle {
 	public void start() {

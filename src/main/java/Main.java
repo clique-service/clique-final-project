@@ -1,3 +1,4 @@
+import clique.verticles.FacebookAuthenticate;
 import clique.verticles.EventAttendeesHandler;
 import clique.verticles.EventInterestedsHandler;
 import clique.verticles.EventMaybesHandler;
@@ -18,6 +19,7 @@ import io.vertx.core.json.JsonObject;
 public class Main {
 	public static void main(String[] args) {
 		Vertx.clusteredVertx(new VertxOptions().setClustered(true).setBlockedThreadCheckInterval(1000*60*60), vertx -> {
+			vertx.result().deployVerticle(new FacebookAuthenticate());
 			vertx.result().deployVerticle(new UserTokenHandler());
 			vertx.result().deployVerticle(new UserInitHandler());
 			vertx.result().deployVerticle(new UserLikesHandler());
