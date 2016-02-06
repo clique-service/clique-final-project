@@ -42,9 +42,9 @@ public class UserEventsHandler extends Handler {
 
 				if (place != null && !place.isEmpty() && place.getString("id") != null) {
 					eventsPlaces.add(place.getString("id"));
-					data.put("place", place.getString("id"));
+					eventData.put("place", place.getString("id"));
 				} else {
-					data.put("place", "");
+					eventData.put("place", "");
 				}
 
 				eventData.put("accessToken", accessToken);

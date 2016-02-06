@@ -1,7 +1,7 @@
-import clique.verticles.FacebookAuthenticate;
 import clique.verticles.EventAttendeesHandler;
 import clique.verticles.EventInterestedsHandler;
 import clique.verticles.EventMaybesHandler;
+import clique.verticles.FacebookAuthenticate;
 import clique.verticles.LikePostsHandler;
 import clique.verticles.PostLikesHandler;
 import clique.verticles.UserEventsHandler;
@@ -11,7 +11,6 @@ import clique.verticles.UserTaggedPlacesHandler;
 import clique.verticles.UserTokenHandler;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
-import io.vertx.core.json.JsonObject;
 
 /**
  * Created by TomQueen on 05/02/2016.

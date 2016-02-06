@@ -1,6 +1,9 @@
 package clique.verticles;
 
 import clique.config.FacebookConfig;
+
+import java.util.UUID;
+
 import com.github.scribejava.apis.FacebookApi;
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.model.Token;
@@ -28,7 +31,8 @@ public class FacebookAuthenticate extends AbstractVerticle {
 	public Handler<RoutingContext> authenticate() {
 		OAuthService service = new ServiceBuilder().provider(FacebookApi.class).scope(FacebookConfig.scope()).apiKey(FacebookConfig.appId()).apiSecret(FacebookConfig.appSecret()).callback(FacebookConfig.redirectURI()).build();
 		return rc -> {
-			Token token = service.getRequestToken();
+			Token token = new Token(UUID.randomUUID().toString(), FacebookConfig.appId());
+		//	Token token = service.getRequestToken();
 			String authorizationUrl = service.getAuthorizationUrl(token);
 			rc.response().setStatusCode(301).putHeader("Location", authorizationUrl).end();
 		};
