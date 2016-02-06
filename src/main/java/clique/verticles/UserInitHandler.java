@@ -2,11 +2,17 @@ package clique.verticles;
 
 import clique.config.DBConfig;
 import clique.config.FacebookConfig;
+import clique.helpers.JsonToPureJava;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
+import io.vertx.core.json.Json;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.rethinkdb.RethinkDB.r;
 
@@ -14,7 +20,7 @@ import static com.rethinkdb.RethinkDB.r;
 public class UserInitHandler extends AbstractVerticle {
 	public void start() {
 		vertx.eventBus().<JsonObject> consumer("userInit", message -> {
-		
+			System.out.println("Initializing user data");
 			HttpClientOptions opt = new HttpClientOptions();
 			opt.setSsl(true);
 			opt.setDefaultHost("graph.facebook.com");
@@ -35,9 +41,8 @@ public class UserInitHandler extends AbstractVerticle {
 	}
 
 	private void saveUser(JsonObject userData) {
-		r.table("Users").insert(r.hashMap("id", userData.getString("id")).with("name", userData.getString("name"))
-				.with("birthday", userData.getString("birthday")).with("location", userData.getValue("location"))
-				.with("education", userData.getValue("education")).with("work", userData.getValue("work"))
-				.with("languages", userData.getValue("languages"))).run(DBConfig.get());
+		System.out.println("Saving user...");
+
+		r.table("Users").insert(JsonToPureJava.toJava(userData)).run(DBConfig.get());
 	}
 }

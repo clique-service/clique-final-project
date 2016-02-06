@@ -12,6 +12,7 @@ public class UserTokenHandler extends AbstractVerticle {
 	public void start() {
 		EventBus eventBus = vertx.eventBus();
 		eventBus.<JsonObject> consumer("userToken", message -> {
+			System.out.println("Got token to refresh");
 
 			HttpClientOptions opt = new HttpClientOptions();
 			opt.setSsl(true);
@@ -21,6 +22,7 @@ public class UserTokenHandler extends AbstractVerticle {
 			try {
 				client.getNow(443, "graph.facebook.com", getExtendAccessToken(getAccessToken(message)), response -> {
 					response.bodyHandler(body -> {
+						System.out.println("Token updated");
 						String result = body.toString().split("=")[1];
 						result = result.split("&")[0];
 						
