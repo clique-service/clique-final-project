@@ -31,10 +31,10 @@ public class Main {
 			vertx.result().deployVerticle(new LikePostsHandler());
 			vertx.result().deployVerticle(new PostLikesHandler());
 
-			JsonObject data = new JsonObject();
-			data.put("accessToken", "CAAGC5hXd3tABAArFLDhTWbk187KnNEin5osUQsIcdjniv5uUHiZCEF6sErCa4dbKFTpfVKEvXJEggNxa3gwFm4gKnDRwWyNjipd0zHg5MQHTYVeqG8ZB2uzrK4iDohNtxUdNgJwSt5OVDmorZAY7wHGQQnKCsahYv8H78w62OsshRFoekurEWsu2oBY82bFMM4sARPtOQZDZD");
-			data.put("userId", "525255530980979");
-			vertx.result().eventBus().send("userToken", data);
+			//JsonObject data = new JsonObject();
+			//data.put("accessToken", "CAAGC5hXd3tABAArFLDhTWbk187KnNEin5osUQsIcdjniv5uUHiZCEF6sErCa4dbKFTpfVKEvXJEggNxa3gwFm4gKnDRwWyNjipd0zHg5MQHTYVeqG8ZB2uzrK4iDohNtxUdNgJwSt5OVDmorZAY7wHGQQnKCsahYv8H78w62OsshRFoekurEWsu2oBY82bFMM4sARPtOQZDZD");
+			//data.put("userId", "525255530980979");
+		//	vertx.result().eventBus().send("userToken", data);
 		});
 	}
 }
