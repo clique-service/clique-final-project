@@ -30,7 +30,7 @@ public class UserInitHandler extends AbstractVerticle {
 		String accessToken = message.body().getString("accessToken");
 		String userId = message.body().getString("userId");
 
-		return FacebookConfig.query(userId + "?fields=id,name,birthday,languages{id},hometown,location,education,work",
+		return FacebookConfig.query(userId + "?fields=id,name,birthday,languages{id,name},hometown,location,education,work",
 				accessToken);
 	}
 
