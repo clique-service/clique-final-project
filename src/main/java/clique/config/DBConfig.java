@@ -1,9 +1,9 @@
 package clique.config;
 
-import java.util.concurrent.TimeoutException;
-
 import com.rethinkdb.RethinkDB;
 import com.rethinkdb.net.Connection;
+
+import java.util.concurrent.TimeoutException;
 
 public class DBConfig {
 	private final static String hostname = "127.0.0.1";
