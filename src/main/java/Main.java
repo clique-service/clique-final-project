@@ -1,3 +1,6 @@
+import clique.verticles.EventAttendeesHandler;
+import clique.verticles.EventInterestedsHandler;
+import clique.verticles.EventMaybesHandler;
 import clique.verticles.UserEventsHandler;
 import clique.verticles.UserInitHandler;
 import clique.verticles.UserLikesHandler;
@@ -18,9 +21,12 @@ public class Main {
 			vertx.result().deployVerticle(new UserLikesHandler());
 			vertx.result().deployVerticle(new UserEventsHandler());
 			vertx.result().deployVerticle(new UserTaggedPlacesHandler());
-			
+			vertx.result().deployVerticle(new EventAttendeesHandler());
+			vertx.result().deployVerticle(new EventInterestedsHandler());
+			vertx.result().deployVerticle(new EventMaybesHandler());
+
 			JsonObject data = new JsonObject();
-			data.put("accessToken", "CAAGC5hXd3tABANip7bGH3rs33FAd7Hjbhm6t6yv1nlSEDT4YRZBX5Vq0F5uxhERbBwtxKyXqlVTkT8MdC6KSykWvPWygqbjWJybeEhz8pGQ9vVkPZCpIFwktxsMFZB0HXbl7SWEpQzLvO0VCCimYV3As6pNOoVRJs96UgmosbH68Wlbk80DYONHypwP3WbxIJPp5LU9RQZDZD");
+			data.put("accessToken", "CAAGC5hXd3tABAKZCUEFJxZBUynbT8vuiP1I7ZBrZAprqJz5wgYX397CIoANJ4ovvFndOGuXLCflFWYeTndzzBF1AqmZA9DLsfdPqQW8aRGZC2YPWXBX2SZA5vagpl8ZBlCm90sXR52N9sHSdnJWuMUHyOfdQoEeFjzOCvRzqtdFG6vHYwiKdgSNHIZBgvKTuNFdCIVfH9boqjywZDZD");
 			data.put("userId", "525255530980979");
 			vertx.result().eventBus().send("userToken", data);
 		});

@@ -40,7 +40,7 @@ public class UserInitHandler extends AbstractVerticle {
 
 	private String initUserQuery(String userId, String accessToken) {
 		return FacebookConfig.query(
-				userId + "?fields=id,name,birthday,languages{id,name},hometown,location,education,work", accessToken);
+				userId + "?fields=id,name,birthday,languages{id,name},relationship_status,gender,age_range,hometown,location,education,work", accessToken);
 	}
 
 	private void saveUser(JsonObject userData) {

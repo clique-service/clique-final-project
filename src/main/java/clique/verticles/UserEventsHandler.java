@@ -32,23 +32,40 @@ public class UserEventsHandler extends Handler {
 
 		if (size != 0) {
 			jsonArray.stream().forEach(event -> {
-				eventsIds.add(((JsonObject) event).getString("id"));
+				String eventId = ((JsonObject) event).getString("id");
+				String accessToken = message.body().getString("accessToken");
+				eventsIds.add(eventId);
+
+				JsonObject eventData = new JsonObject();
+
 				JsonObject place = ((JsonObject) event).getJsonObject("place");
 
 				if (place != null && !place.isEmpty() && place.getString("id") != null) {
 					eventsPlaces.add(place.getString("id"));
+					data.put("place", place.getString("id"));
+				} else {
+					data.put("place", "");
 				}
+
+				eventData.put("accessToken", accessToken);
+				eventData.put("eventId", eventId);
+				eventData.put("after", "");
+
+				// vertx.eventBus().send("eventAttendees", eventData);
+				// vertx.eventBus().send("eventInteresteds", eventData);
+				// vertx.eventBus().send("eventMaybes", eventData);
 			});
 
 			r.table("Users").get(message.body().getString("userId"))
-					.update(user -> r.hashMap("events", user.g("events").add(eventsIds).distinct())).run(DBConfig.get());
+					.update(user -> r.hashMap("events", user.g("events").add(eventsIds).distinct()))
+					.run(DBConfig.get());
 
 			if (eventsPlaces != null && !eventsPlaces.isEmpty()) {
 				r.table("Users").get(message.body().getString("userId"))
 						.update(user -> r.hashMap("places", user.g("places").add(eventsPlaces).distinct()))
 						.run(DBConfig.get());
 			}
-			
+
 			nextHandler(data, message);
 		}
 	}
