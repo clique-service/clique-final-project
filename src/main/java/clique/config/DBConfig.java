@@ -1,6 +1,7 @@
 package clique.config;
 
 import com.rethinkdb.RethinkDB;
+import com.rethinkdb.gen.ast.ReqlExpr;
 import com.rethinkdb.net.Connection;
 
 import java.util.concurrent.TimeoutException;
@@ -44,10 +45,17 @@ public class DBConfig {
 
 	public static Connection get() {
 		try {
-			System.out.println(hostname() + ":" + port() + "/" + dbName());
+			//System.out.println(hostname() + ":" + port() + "/" + dbName());
 			return r.connection().hostname(hostname()).port(port()).db(dbName()).connect();
 		} catch (TimeoutException e) {
 			throw new RuntimeException();
 		}
+	}
+
+	public static <T> T execute(ReqlExpr expr) {
+		Connection connection = get();
+		Object x = expr.run(connection);
+		connection.close();
+		return (T)x;
 	}
 }

@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import clique.config.DBConfig;
+import com.rethinkdb.gen.ast.Branch;
+import com.rethinkdb.gen.ast.ReqlExpr;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
@@ -29,16 +31,15 @@ public abstract class EventHandler extends Handler {
 				String name = ((JsonObject) attend).getString("name").toLowerCase();
 				String id = ((JsonObject) attend).getString("id");
 
-				r.branch(r.table("Users").get(id),
+				ReqlExpr expr = r.branch(r.table("Users").get(id),
 						r.table("Users").get(id)
 								.update(user -> r.hashMap("events", user.g("events").add(eventId).distinct())
-										.with("places", user.g("places").add(places).distinct()))
-								.run(DBConfig.get()),
+										.with("places", user.g("places").add(places).distinct())),
 						r.table("Users")
 								.insert(r.hashMap().with("id", id).with("name", name.toLowerCase())
 										.with("events", r.array(eventId)).with("places", places)
-										.with("likes", r.array()).with("categories", r.array()))).run(DBConfig.get());
-
+										.with("likes", r.array()).with("categories", r.array())));
+				DBConfig.execute(expr);
 			});
 			
 			nextHandler(data, message);

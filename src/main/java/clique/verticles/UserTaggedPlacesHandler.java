@@ -40,9 +40,10 @@ public class UserTaggedPlacesHandler extends Handler{
 			});
 
 			if (places != null && !places.isEmpty()) {
-				r.table("Users").get(message.body().getString("userId"))
+				DBConfig.execute(
+						r.table("Users").get(message.body().getString("userId"))
 						.update(user -> r.hashMap("places", user.g("places").add(places).distinct()))
-						.run(DBConfig.get());
+				);
 			}
 			
 			nextHandler(data, message);

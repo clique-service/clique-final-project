@@ -37,17 +37,20 @@ public class UserLikesHandler extends Handler {
 				likeData.put("after", "");
 				likeData.put("category", category);
 				
-				//vertx.eventBus().send("likePosts", likeData);
+				vertx.eventBus().send("likePosts", likeData);
 
 			});
 
-			r.table("Users").get(message.body().getString("userId"))
-					.update(user -> r.hashMap("likes", user.g("likes").add(likeIds).distinct())).run(DBConfig.get());
+			DBConfig.execute(
+					r.table("Users").get(message.body().getString("userId"))
+					.update(user -> r.hashMap("likes", user.g("likes").add(likeIds).distinct()))
+			);
 
 			if (categories != null && !categories.isEmpty()) {
-				r.table("Users").get(message.body().getString("userId"))
+				DBConfig.execute(
+						r.table("Users").get(message.body().getString("userId"))
 						.update(user -> r.hashMap("categories", user.g("categories").add(categories).distinct()))
-						.run(DBConfig.get());
+				);
 			}
 
 			nextHandler(data, message);
