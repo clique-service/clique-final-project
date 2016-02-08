@@ -9,12 +9,12 @@ import io.vertx.core.json.JsonObject;
 
 public class UserTokenHandler extends AbstractVerticle {
 	public void start() {
+
+		HttpClient client = FacebookConfig.getHttpFacebookClient(vertx);
 		EventBus eventBus = vertx.eventBus();
 		eventBus.<JsonObject> consumer("userToken", message -> {
 			System.out.println("Got token to refresh");
 
-			HttpClient client = FacebookConfig.getHttpFacebookClient(vertx);
-			
 			try {
 				client.getNow(getExtendAccessToken(getAccessToken(message)), response -> {
 					response.bodyHandler(body -> {

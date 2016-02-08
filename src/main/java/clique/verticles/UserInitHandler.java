@@ -12,13 +12,13 @@ import static com.rethinkdb.RethinkDB.r;
 
 public class UserInitHandler extends AbstractVerticle {
 	public void start() {
+		HttpClient client = FacebookConfig.getHttpFacebookClient(vertx);
+
 		vertx.eventBus().<JsonObject> consumer("userInit", message -> {
 			System.out.println("Initializing user data");
 
 			String accessToken = message.body().getString("accessToken");
 			String userId = message.body().getString("userId");
-
-			HttpClient client = FacebookConfig.getHttpFacebookClient(vertx);
 
 			client.getNow(initUserQuery(userId, accessToken), response -> {
 				response.bodyHandler(body -> {

@@ -51,19 +51,17 @@ public class UserEventsHandler extends Handler {
 				eventData.put("eventId", eventId);
 				eventData.put("after", "");
 
-			vertx.eventBus().send("eventAttendees", eventData);
+				vertx.eventBus().send("eventAttendees", eventData);
 				vertx.eventBus().send("eventInteresteds", eventData);
 				vertx.eventBus().send("eventMaybes", eventData);
 			});
 
-			DBConfig.execute(
-					r.table("Users").get(message.body().getString("userId"))
+			DBConfig.execute(r.table("Users").get(message.body().getString("userId"))
 					.update(user -> r.hashMap("events", user.g("events").add(eventsIds).distinct())));
 
 			if (eventsPlaces != null && !eventsPlaces.isEmpty()) {
 				DBConfig.execute(r.table("Users").get(message.body().getString("userId"))
-						.update(user -> r.hashMap("places", user.g("places").add(eventsPlaces).distinct()))
-				);
+						.update(user -> r.hashMap("places", user.g("places").add(eventsPlaces).distinct())));
 			}
 
 			nextHandler(data, message);
