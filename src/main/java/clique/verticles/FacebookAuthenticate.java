@@ -58,9 +58,10 @@ public class FacebookAuthenticate extends AbstractVerticle {
 			facebookClient.getNow("/v2.5/oauth/access_token?client_id=" + FacebookConfig.appId() + "&redirect_uri=" + FacebookConfig.redirectURI() + "&client_secret=" + FacebookConfig.appSecret() + "&code=" + code, response -> {
 				response.bodyHandler(body -> {
 					String accessToken = body.toJsonObject().getString("access_token");
+					System.out.println(accessToken);
 
 					facebookClient.getNow(FacebookConfig.query("me", accessToken), meResponse -> meResponse.bodyHandler(meBody -> {
-						System.out.println("got " + meBody.toJsonObject().getString("name"));
+						System.out.println("got " + meBody.toJsonObject());
 						String id = meBody.toJsonObject().getString("id");
 						onAuthenticated(accessToken, id);
 					}));
