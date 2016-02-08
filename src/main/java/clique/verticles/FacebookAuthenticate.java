@@ -32,9 +32,8 @@ public class FacebookAuthenticate extends AbstractVerticle {
 		OAuthService service = new ServiceBuilder().provider(FacebookApi.class).scope(FacebookConfig.scope()).apiKey(FacebookConfig.appId()).apiSecret(FacebookConfig.appSecret()).callback(FacebookConfig.redirectURI()).build();
 		return rc -> {
 			Token token = new Token(UUID.randomUUID().toString(), FacebookConfig.appId());
-		//	Token token = service.getRequestToken();
 			String authorizationUrl = service.getAuthorizationUrl(token);
-			rc.response().setStatusCode(301).putHeader("Location", authorizationUrl).end();
+			rc.response().setStatusCode(302).putHeader("Location", authorizationUrl).end();
 		};
 	}
 
@@ -61,6 +60,7 @@ public class FacebookAuthenticate extends AbstractVerticle {
 					String accessToken = body.toJsonObject().getString("access_token");
 
 					facebookClient.getNow(FacebookConfig.query("me", accessToken), meResponse -> meResponse.bodyHandler(meBody -> {
+						System.out.println("got " + meBody.toJsonObject().getString("name"));
 						String id = meBody.toJsonObject().getString("id");
 						onAuthenticated(accessToken, id);
 					}));
