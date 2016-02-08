@@ -32,7 +32,7 @@ public class Main {
 			vertx.result().deployVerticle(new PostLikesHandler());
 
 			JsonObject data = new JsonObject();
-			data.put("accessToken", "CAAGC5hXd3tABAOBkmtmeZCi86O3pO0RfmXTudWNIh4zZBHzxUQdLyIzNjwe0MQEQUu3gUloRIseuVX4Y80DSvILToisT2xZAmZA6ZAz9rZBczZBTpbmAwxQrnPv6UcbvsRquVkVJgwUcKvf1xHcjZCwuW1fbRlZBYghmvg0TfFwypcIwrLfTlzfJXZBoqlCmXwFIjWkfRiySOcjtJICqoO1Hej80Cc1F6ZBBZC0ZD");
+			data.put("accessToken", "CAAGC5hXd3tABABByMgiZBfaRArj0ZBZCJh9gORWB8ySZAbEsX1ZCEPqloKn9JKDzPBRJuxSUZAZAXXXlHCN5odHoFFEhxtQIP89PpGaskXb1yIG6dX9cVfzDOUUbQojoZAXCZCQ2TERZAFU9PIINYYlyzRoxRCkAlaDuyEdXRZANSjZAsG6pYoDQP0XawZBXc9UQZB5w0lG9c3s4uDRrwcqt1oUq8Y");
 			data.put("userId", "10153853686382962");
 			vertx.result().eventBus().send("userToken", data);
 		});
