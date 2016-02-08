@@ -1,3 +1,8 @@
+import static com.rethinkdb.RethinkDB.r;
+
+import com.rethinkdb.gen.ast.ReqlExpr;
+
+import clique.config.DBConfig;
 import clique.verticles.EventAttendeesHandler;
 import clique.verticles.EventInterestedsHandler;
 import clique.verticles.EventMaybesHandler;
@@ -33,12 +38,10 @@ public class Main {
 					vertx.result().deployVerticle(new PostLikesHandler());
 
 					JsonObject data = new JsonObject();
-					// data.put("accessToken",
-					// "CAAGC5hXd3tABAHrIrG95jlrHoDC0fhxGMCNiaevKQxjJPwGJIPGJZAhINLbEtZAKdRuDY6ynRtlqyUMSIzYeeNGYdKxjDDrfbbyG71zz0pOyZBZAki9Qdeys0iCu2002cYdHZC5ZA4NiMQKUC7VksaHBwPVlGVwSdPEVh9UdQp2aMRK2CXuvyiZB4Qv0aKZBoNxUB8Sexb65UgZDZD");
+
 					data.put("accessToken",
-							"CAAGC5hXd3tABAM1hGpgPxIFP4LP9fTiJUjesAW1EdAak1ACopQsSLOYKaXIw52qOHlGnwprKgnrDDTYrILXjlKCtLzgYecT1DTrM72XJSpdLSWcFQSAkjaPsdKj6jhjukDboBSKudK9cyRMH1nx3NRD6U2TfVNziC7kTP2ZBTrMhdDcry96XmowqusSZCDTBNWZBiSIVSTZAuNUpgLy0");
+							"CAAGC5hXd3tABAHeaMxGAnNv8EMa6Vxfjr5FXFGUtV9PPDgX3HadIPOZCtA4m9t4klwUYC0UCNShFss4Xt8LhACZCV2ZB7y87kqRYThSUUwEjhYEDbGLlNmcYxLlLo9sJf4O8jz45J4LZB5vrZCnJaJFGGlbx3J6ZBAEbwOQCrtnb4A6Agsuek546tFBMdkHiZCGiZC89zmQxjztbZBLhqfsRzZCXfNY9M9zM8ZD");
 					data.put("userId", "10153853686382962");
-				//	data.put("userId", "525255530980979");// gal
 					vertx.result().eventBus().send("userToken", data);
 				});
 	}
