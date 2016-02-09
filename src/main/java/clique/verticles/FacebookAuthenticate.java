@@ -14,6 +14,7 @@ import io.vertx.core.http.HttpClient;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
+import io.vertx.ext.web.handler.StaticHandler;
 
 /**
  * Providing Facebook Login capabilities over HTTP
@@ -23,9 +24,30 @@ public class FacebookAuthenticate extends AbstractVerticle {
 	@Override
 	public void start() throws Exception {
 		Router router = Router.router(vertx);
-		router.get("/").handler(authenticate());
+		router.get("/").handler(index());
+		router.get("/logo.png").handler(image());
+		router.get("/privacy-policy").handler(privacyPolicy());
+		router.get("/auth/facebook").handler(authenticate());
 		router.get("/auth/facebook/callback").handler(startFetching());
 		vertx.createHttpServer().requestHandler(router::accept).listen(9000);
+	}
+
+	private Handler<RoutingContext> image() {
+		return rc -> {
+			rc.response().putHeader("Content-Type", "image/png").sendFile("src/main/resources/logo.png");
+		};
+	}
+
+	private Handler<RoutingContext> privacyPolicy() {
+		return rc -> {
+			rc.response().putHeader("Content-Type", "text/html").sendFile("src/main/resources/terms.html");
+		};
+	}
+
+	public Handler<RoutingContext> index() {
+		return rc -> {
+			rc.response().putHeader("Content-Type", "text/html").sendFile("src/main/resources/index.html");
+		};
 	}
 
 	public Handler<RoutingContext> authenticate() {
