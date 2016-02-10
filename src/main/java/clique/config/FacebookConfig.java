@@ -14,13 +14,25 @@ public class FacebookConfig {
 		
 		return appId;
 	}
-
+	
 	public static String appSecret() {
-		return "662a60606275d946d89f675f55b5b09e";
+		String appSecret = System.getenv("FACEBOOK_APP_SECRET");
+
+		if (appSecret == null || appSecret.isEmpty()) {
+			return "662a60606275d946d89f675f55b5b09e";
+		}
+		
+		return appSecret;
 	}
 
 	public static String redirectURI() {
-		return "http://localhost:9000/auth/facebook/callback";
+		String redirectURI = System.getenv("FACEBOOK_REDIRECT_URI");
+
+		if (redirectURI == null || redirectURI.isEmpty()) {
+			return "http://localhost:9000/auth/facebook/callback";
+		}
+		
+		return redirectURI;
 	}
 
 	public static String query(String query, String accessToken) {
