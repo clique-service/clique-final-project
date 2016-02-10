@@ -6,7 +6,13 @@ import io.vertx.core.http.HttpClientOptions;
 
 public class FacebookConfig {
 	public static String appId() {
-		return "425399697661648";
+		String appId = System.getenv("FACEBOOK_APP_ID");
+
+		if (appId == null || appId.isEmpty()) {
+			return "425399697661648";
+		}
+		
+		return appId;
 	}
 
 	public static String appSecret() {
@@ -24,31 +30,13 @@ public class FacebookConfig {
 	}
 
 	public static String scope() {
-		return "user_about_me," +
-				"user_actions.books," +
-				"user_actions.fitness," +
-				"user_actions.music," +
-				"user_actions.news," +
-				"user_actions.video," +
+		return 
 				"user_birthday," +
-				"user_education_history," +
 				"user_events," +
-				"user_friends," +
-				"user_games_activity," +
-				"user_hometown," +
 				"user_likes," +
 				"user_location," +
-				"user_managed_groups," +
-				"user_photos," +
-				"user_posts," +
-				"user_relationship_details," +
-				"user_relationships," +
-				"user_religion_politics," +
 				"user_status," +
 				"user_tagged_places," +
-				"user_videos," +
-				"user_website," +
-				"user_work_history," +
 				"public_profile";
 	}
 
