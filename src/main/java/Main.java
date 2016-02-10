@@ -1,8 +1,3 @@
-import static com.rethinkdb.RethinkDB.r;
-
-import com.rethinkdb.gen.ast.ReqlExpr;
-
-import clique.config.DBConfig;
 import clique.verticles.EventAttendeesHandler;
 import clique.verticles.EventInterestedsHandler;
 import clique.verticles.EventMaybesHandler;
@@ -16,7 +11,6 @@ import clique.verticles.UserTaggedPlacesHandler;
 import clique.verticles.UserTokenHandler;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
-import io.vertx.core.json.JsonObject;
 
 /**
  * Created by TomQueen on 05/02/2016.
@@ -36,13 +30,6 @@ public class Main {
 					vertx.result().deployVerticle(new EventMaybesHandler());
 					vertx.result().deployVerticle(new LikePostsHandler());
 					vertx.result().deployVerticle(new PostLikesHandler());
-
-					JsonObject data = new JsonObject();
-
-					//data.put("accessToken",
-					//		"CAAGC5hXd3tABAAoZCFurVy1BEmgGoJmX7E8oLrX67KkXc6Y8giGZBaDHlAITJAxkueNOmqRCILsE3ZCxNaapoJ8o5dEyGh9cVOyrWo7ZApTsRdaslZBZCPkobxzF7PyVDbilhQERZAJtzpEanZBaNgKViYkAFeU4IOtmE611YRZCqrCVoLWEftWiXJdeobRTa9oPcZCFqwEZAcsYAZDZD");
-					//data.put("userId", "525255530980979");
-				//	vertx.result().eventBus().send("userToken", data);
 				});
 	}
 }
