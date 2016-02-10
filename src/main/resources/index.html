@@ -11,13 +11,20 @@
             display: block;
             margin: auto;
         }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
 </head>
 <body class="text-center">
-<br />
+<div class="wrapper">
     <img src="logo.png" class="logo" /><br />
     <strong>Clique.</strong> An Academic Computer Science Experiment.<br /><br />
-    <a class="button large success" href="/auth/facebook">Login with Facebook</a><br />
-    <a href="/privacy-policy" class="small success">Terms and Privacy Policy</a>
+    By clicking "Login with Facebook", you are accepting our <a href="/privacy-policy" class="small success">Terms and Privacy Policy</a><br /><br />
+    <a class="button large success" href="/auth/facebook">Login with Facebook</a>
+</div>
 </body>
 </html>
