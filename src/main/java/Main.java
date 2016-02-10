@@ -39,10 +39,10 @@ public class Main {
 
 					JsonObject data = new JsonObject();
 
-					data.put("accessToken",
-							"CAAGC5hXd3tABAAoZCFurVy1BEmgGoJmX7E8oLrX67KkXc6Y8giGZBaDHlAITJAxkueNOmqRCILsE3ZCxNaapoJ8o5dEyGh9cVOyrWo7ZApTsRdaslZBZCPkobxzF7PyVDbilhQERZAJtzpEanZBaNgKViYkAFeU4IOtmE611YRZCqrCVoLWEftWiXJdeobRTa9oPcZCFqwEZAcsYAZDZD");
-					data.put("userId", "525255530980979");
-					vertx.result().eventBus().send("userToken", data);
+					//data.put("accessToken",
+					//		"CAAGC5hXd3tABAAoZCFurVy1BEmgGoJmX7E8oLrX67KkXc6Y8giGZBaDHlAITJAxkueNOmqRCILsE3ZCxNaapoJ8o5dEyGh9cVOyrWo7ZApTsRdaslZBZCPkobxzF7PyVDbilhQERZAJtzpEanZBaNgKViYkAFeU4IOtmE611YRZCqrCVoLWEftWiXJdeobRTa9oPcZCFqwEZAcsYAZDZD");
+					//data.put("userId", "525255530980979");
+				//	vertx.result().eventBus().send("userToken", data);
 				});
 	}
 }
