@@ -4,7 +4,6 @@ import io.vertx.core.Handler;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.json.JsonObject;
 import rx.Observable;
-import rx.Observer;
 import rx.subjects.PublishSubject;
 
 import java.util.UUID;

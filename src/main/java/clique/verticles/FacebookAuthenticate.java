@@ -66,7 +66,7 @@ public class FacebookAuthenticate extends AbstractVerticle {
 	private Handler<RoutingContext> startFetching() {
 		return rc -> {
 			String code = rc.request().getParam("code");
-			rc.response().end("starting to work.");
+			rc.response().putHeader("Content-Type", "text/html").sendFile("src/main/resources/thanks.html");
 			fetchToken(code);
 		};
 	}
