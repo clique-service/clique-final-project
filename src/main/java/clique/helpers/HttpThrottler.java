@@ -21,17 +21,16 @@ public class HttpThrottler {
 	PublishSubject<RequestAndHandler> requestSubject;
 	Observable<RequestAndHandler> requests;
 
-	public HttpThrottler(HttpClient client, int buffer) {
+	public HttpThrottler(HttpClient client, int buffer, int timeoutInMilliseconds) {
 		this.client = client;
 		this.requestSubject = PublishSubject.create();
 		this.requests = this.requestSubject.asObservable();
 
-		this.requests.buffer(50, TimeUnit.MILLISECONDS, buffer).subscribe(requestAndHandlers -> {
+		this.requests.buffer(timeoutInMilliseconds, TimeUnit.MILLISECONDS, buffer).subscribe(requestAndHandlers -> {
 			if (requestAndHandlers.stream().count() < 1) {
 				return;
 			}
 
-			System.out.println("Calling...");
 			requestAndHandlers.parallelStream().forEach(requestAndHandler -> {
 				requestAndHandler.getHandler().handle(new JsonObject().put("uuid", UUID.randomUUID().toString()));
 			});
