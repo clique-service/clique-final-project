@@ -17,6 +17,10 @@ public class UserTokenHandler extends AbstractVerticle {
 
 			try {
 				client.getNow(getExtendAccessToken(getAccessToken(message)), response -> {
+					if (response.statusCode() != 200)
+					{
+						return;
+					}
 					response.bodyHandler(body -> {
 						System.out.println("Token updated");
 						String result = body.toString().split("=")[1];

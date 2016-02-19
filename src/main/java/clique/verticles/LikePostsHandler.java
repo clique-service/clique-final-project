@@ -35,7 +35,6 @@ public class LikePostsHandler extends Handler {
 				postData.put("category", category);
 
 				vertx.eventBus().send("postLikes", postData);
-
 			});
 			
 			nextHandler(data, message);

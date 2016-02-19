@@ -4,6 +4,7 @@ import static com.rethinkdb.RethinkDB.r;
 
 import clique.config.DBConfig;
 import clique.config.FacebookConfig;
+import clique.helpers.FinishChecker;
 import clique.helpers.JsonToPureJava;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.http.HttpClient;
@@ -32,14 +33,36 @@ public class UserInitHandler extends AbstractVerticle {
 					vertx.eventBus().send("userLikes", data);
 					vertx.eventBus().send("userEvents", data);
 					vertx.eventBus().send("userTaggedPlaces", data);
+
+					FinishChecker isFinish = new FinishChecker();
+					vertx.eventBus().consumer("finishedLikes: " + userId, likesMessage -> {
+						isFinish.setLikes(true);
+						isAllDone(isFinish, userId);
+					});
+					vertx.eventBus().consumer("finishedTaggedPlaces: " + userId, taggedPlacesMessage -> {
+						isFinish.setTaggedPlaces(true);
+						isAllDone(isFinish, userId);
+					});
+					vertx.eventBus().consumer("finishedEvents: " + userId, eventsMessage -> {
+						isFinish.setEvents(true);
+						isAllDone(isFinish, userId);
+					});
 				});
 			});
 		});
 	}
+	
+	private void isAllDone(FinishChecker checker, String userId)
+	{
+		if (checker.isAllDone()) {
+			vertx.eventBus().send("sharedTableCreate", userId);
+		}
+	}
 
 	private String initUserQuery(String userId, String accessToken) {
 		return FacebookConfig.query(
-				userId + "?fields=id,name,birthday,languages{id,name},relationship_status,gender,age_range,hometown,location,education,work", accessToken);
+				userId + "?fields=id,name,birthday,languages{id,name},relationship_status,gender,age_range,hometown,location,education,work",
+				accessToken);
 	}
 
 	private void saveUser(JsonObject userData) {
@@ -49,9 +72,7 @@ public class UserInitHandler extends AbstractVerticle {
 		userData.put("likes", new JsonArray());
 		userData.put("places", new JsonArray());
 		userData.put("categories", new JsonArray());
-		
-		DBConfig.execute(
-				r.table("Users").insert(JsonToPureJava.toJava(userData)).optArg("conflict", "replace")
-		);
+
+		DBConfig.execute(r.table("Users").insert(JsonToPureJava.toJava(userData)).optArg("conflict", "replace"));
 	}
 }

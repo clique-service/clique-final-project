@@ -10,7 +10,7 @@ import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
-public class UserTaggedPlacesHandler extends Handler{
+public class UserTaggedPlacesHandler extends Handler {
 
 	@Override
 	public String getHandlerName() {
@@ -20,7 +20,7 @@ public class UserTaggedPlacesHandler extends Handler{
 	@Override
 	public String getQuery(Message<JsonObject> message) {
 		String userId = message.body().getString("userId");
-		return userId + "/tagged_places?fields=place{id}";		
+		return userId + "/tagged_places?fields=place{id}";
 	}
 
 	@Override
@@ -40,13 +40,14 @@ public class UserTaggedPlacesHandler extends Handler{
 			});
 
 			if (places != null && !places.isEmpty()) {
-				DBConfig.execute(
-						r.table("Users").get(message.body().getString("userId"))
-						.update(user -> r.hashMap("places", user.g("places").add(places).distinct()))
-				);
+				DBConfig.execute(r.table("Users").get(message.body().getString("userId"))
+						.update(user -> r.hashMap("places", user.g("places").add(places).distinct())));
 			}
-			
+
 			nextHandler(data, message);
+		} else {
+			System.out.println("finish " + getHandlerName());
+			vertx.eventBus().send("finishedTaggedPlaces: " + message.body().getString("userId"), "");
 		}
 	}
 }

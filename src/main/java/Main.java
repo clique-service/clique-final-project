@@ -4,6 +4,7 @@ import clique.verticles.EventMaybesHandler;
 import clique.verticles.FacebookAuthenticate;
 import clique.verticles.LikePostsHandler;
 import clique.verticles.PostLikesHandler;
+import clique.verticles.SharedTableCreateHandler;
 import clique.verticles.UserEventsHandler;
 import clique.verticles.UserInitHandler;
 import clique.verticles.UserLikesHandler;
@@ -22,6 +23,11 @@ public class Main {
 					vertx.result().deployVerticle(new FacebookAuthenticate());
 					vertx.result().deployVerticle(new UserTokenHandler());
 					vertx.result().deployVerticle(new UserInitHandler());
+					
+					// TODO: Add listener to the changes
+					vertx.result().deployVerticle(new SharedTableCreateHandler());
+					
+					
 					vertx.result().deployVerticle(new UserLikesHandler());
 					vertx.result().deployVerticle(new UserEventsHandler());
 					vertx.result().deployVerticle(new UserTaggedPlacesHandler());

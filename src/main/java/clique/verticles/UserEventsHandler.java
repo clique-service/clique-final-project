@@ -66,5 +66,10 @@ public class UserEventsHandler extends Handler {
 
 			nextHandler(data, message);
 		}
+		else
+		{
+			System.out.println("finish " + getHandlerName());
+			vertx.eventBus().send("finishedEvents: " + message.body().getString("userId"), "");
+		}
 	}
 }

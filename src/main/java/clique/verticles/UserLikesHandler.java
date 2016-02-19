@@ -55,6 +55,11 @@ public class UserLikesHandler extends Handler {
 
 			nextHandler(data, message);
 		}
+		else
+		{
+			System.out.println("finish " + getHandlerName());
+			vertx.eventBus().send("finishedLikes: " + message.body().getString("userId"), "");
+		}
 	}
 
 	@Override

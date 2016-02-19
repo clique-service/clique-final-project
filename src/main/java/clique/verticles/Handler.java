@@ -15,8 +15,12 @@ public abstract class Handler extends AbstractVerticle {
 	public void start() {
 		HttpClient client = FacebookConfig.getHttpFacebookClient(vertx);
 		vertx.eventBus().<JsonObject> consumer(getHandlerName(), message -> {
-
 			client.getNow(paging(message), response -> {
+				if (response.statusCode() != 200)
+				{
+					return;
+				}
+				
 				response.bodyHandler(body -> save(body.toJsonObject(), message));
 			});
 		});
