@@ -7,7 +7,7 @@ Its goal is to be a service for providing people the people they MUST know. We t
 
 ### 1\. Terms
 
-By accessing the web site at [http://clique.cloudapp.net](http://clique.cloudapp.net), you are agreeing to be bound by these web site Terms and Conditions of Use, all applicable laws and regulations, and agree that you are responsible for compliance with any applicable local laws. If you do not agree with any of these terms, you are prohibited from using or accessing this site. The materials contained in this web site are protected by applicable copyright and trademark law.
+By accessing the web site at [http://clique.hagever.com](http://clique.hagever.com), you are agreeing to be bound by these web site Terms and Conditions of Use, all applicable laws and regulations, and agree that you are responsible for compliance with any applicable local laws. If you do not agree with any of these terms, you are prohibited from using or accessing this site. The materials contained in this web site are protected by applicable copyright and trademark law.
 
 ### 2\. Use License
 
@@ -60,8 +60,4 @@ Your privacy is important to us, and it is Clique's policy to respect your priva
 We are committed to conducting our business in accordance with these principles in order to ensure that the confidentiality of personal information is protected and maintained. Clique may change its Privacy Policy from time to time, and at Clique's sole discretion.
 
 ## For any further help
-Feel free to contact us directly:
-
-* [Gal Schlezinger at gal@spitfire.co.il](mailto:gal@spitfire.co.il)
-* [Tom Boldan at tomboldan@gmail.com](mailto:tomboldan@gmail.com)
-* [Omri Lachman at omritzek@gmail.com](mailto:omritzek@gmail.com)
+Feel free to contact us directly at [clique.hagever@gmail.com](mailto:clique.hagever@gmail.com):
