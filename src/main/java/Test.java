@@ -1,7 +1,7 @@
 import io.vertx.core.AbstractVerticle;
 
 /**
- * Created by TomQueen on 04/02/2016.
+ * Created by schniz and tom boldan on 04/02/2016.
  */
 public class Test extends AbstractVerticle {
     public void start2() {

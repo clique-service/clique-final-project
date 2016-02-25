@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by schniz on 05/02/2016. Converts Vert.x 3 JsonArray to pure java for
+ * Created by schniz and tom boldan on 05/02/2016. Converts Vert.x 3 JsonArray to pure java for
  * using it with RethinkDB
  */
 public class JsonToPureJava {

@@ -2,7 +2,7 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.eventbus.EventBus;
 
 /**
- * Created by TomQueen on 05/02/2016.
+ * Created by schniz and tom boldan on 05/02/2016.
  */
 public class Publisher extends AbstractVerticle {
     public void start() {

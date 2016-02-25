@@ -14,7 +14,7 @@ import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 
 /**
- * Created by TomQueen on 05/02/2016.
+ * Created by schniz and tom boldan on 05/02/2016.
  */
 public class Main {
 	public static void main(String[] args) {
