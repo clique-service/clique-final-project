@@ -27,7 +27,7 @@ public class SharedTableCreateHandler extends AbstractVerticle {
 
 			// TODO: Start gets changes
 
-			ReqlExpr user = r.table("Users").get(userId);
+			ReqlExpr user = r.table("Users").get(userId).coerceTo("object");
 
 			ReqlExpr dataToShare = r.table("Users").map(otherUser -> {
 				return r.hashMap().with("id", otherUser.g("id")).with("name", otherUser.g("name"))
