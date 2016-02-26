@@ -48,7 +48,7 @@ public class SharedTableCreateHandler extends AbstractVerticle {
 
 				DBConfig.execute(r.tableDrop(tableName));
 				future.complete();
-			} , res -> {
+			} , false, res -> {
 				System.out.println("Finish shared result");
 			});
 		});
