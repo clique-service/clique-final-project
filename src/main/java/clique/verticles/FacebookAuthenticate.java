@@ -1,36 +1,32 @@
 package clique.verticles;
 
+import static com.rethinkdb.RethinkDB.r;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
-import static com.rethinkdb.RethinkDB.r;
 
-import clique.config.DBConfig;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 import com.github.scribejava.apis.FacebookApi;
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.oauth.OAuthService;
-
-import clique.config.FacebookConfig;
-import com.rethinkdb.RethinkDB;
-import com.rethinkdb.gen.ast.Get;
 import com.rethinkdb.gen.ast.ReqlExpr;
+
+import clique.config.DBConfig;
+import clique.config.FacebookConfig;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpClient;
-import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
-import io.vertx.ext.web.handler.CorsHandler;
-import io.vertx.ext.web.handler.OAuth2AuthHandler;
 import io.vertx.ext.web.handler.SessionHandler;
-import io.vertx.ext.web.handler.TemplateHandler;
-import io.vertx.ext.web.handler.sockjs.*;
+import io.vertx.ext.web.handler.sockjs.SockJSHandler;
+import io.vertx.ext.web.handler.sockjs.SockJSHandlerOptions;
 import io.vertx.ext.web.sstore.LocalSessionStore;
 import io.vertx.ext.web.sstore.SessionStore;
 import io.vertx.ext.web.templ.HandlebarsTemplateEngine;
@@ -189,12 +185,25 @@ public class FacebookAuthenticate extends AbstractVerticle {
 							meResponse.bodyHandler(meBody -> {
 								System.out.println("got " + meBody.toJsonObject());
 								String id = meBody.toJsonObject().getString("id");
+								createChangesTable(id);
 								handler.handle(id);
 								onAuthenticated(accessToken, id);
 							});
 						});
 					});
 				});
+	}
+	
+	private void createChangesTable(String userId)
+	{
+		String tableName = userId + "Shared";
+
+		if (!Boolean.valueOf(DBConfig.execute(r.tableList().contains(tableName)).toString())) {
+			DBConfig.execute(r.tableCreate(tableName));
+
+			DBConfig.execute(r.table(tableName).indexCreate("rating", user -> user.g("events").mul(5)
+					.add(user.g("likes").mul(3)).add(user.g("places").mul(2)).add(user.g("categories").mul(2))));
+		}
 	}
 
 	/**

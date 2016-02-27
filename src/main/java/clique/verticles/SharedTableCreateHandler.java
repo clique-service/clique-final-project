@@ -21,7 +21,9 @@ public class SharedTableCreateHandler extends AbstractVerticle {
 				DBConfig.execute(r.table(tableName).indexCreate("rating", user -> user.g("events").mul(5)
 						.add(user.g("likes").mul(3)).add(user.g("places").mul(2)).add(user.g("categories").mul(2))));
 			}
-			vertx.eventBus().send("sharedTableDataInsertion", message.body());
+			
+			message.reply("success");
+	//		vertx.eventBus().send("sharedTableDataInsertion", message.body());
 		});
 	}
 }

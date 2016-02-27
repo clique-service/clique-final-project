@@ -51,11 +51,11 @@ public class UserInitHandler extends AbstractVerticle {
 			});
 		});
 	}
-	
-	private void isAllDone(FinishChecker checker, String userId)
-	{
+
+	private void isAllDone(FinishChecker checker, String userId) {
 		if (checker.isAllDone()) {
-			vertx.eventBus().send("sharedTableCreate", userId);
+			// vertx.eventBus().send("sharedTableCreate", userId);
+			vertx.eventBus().send("sharedTableDataInsertion", userId);
 		}
 	}
 
