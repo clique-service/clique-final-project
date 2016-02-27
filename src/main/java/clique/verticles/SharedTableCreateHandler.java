@@ -29,7 +29,7 @@ public class SharedTableCreateHandler extends AbstractVerticle {
 
 			// TODO: Start gets changes
 			
-			vertx.eventBus().send("sharedTableDataInsertion", message);
+			vertx.eventBus().send("sharedTableDataInsertion", message.body());
 		});
 	}
 }

@@ -14,5 +14,4 @@ public class TopMatchesChanges {
 		
 		return null;
 	}
-
 }
