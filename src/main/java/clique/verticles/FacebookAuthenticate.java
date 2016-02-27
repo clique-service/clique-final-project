@@ -94,9 +94,12 @@ public class FacebookAuthenticate extends AbstractVerticle {
 							sockJSSocket.write(Buffer.buffer(Json.encode(data)));
 						});
 
+						sockJSSocket.endHandler(aVoid -> topMatchesChanges.close());
 
-
-						sockJSSocket.close();
+						vertx.eventBus().consumer("finishedAllChanges:" + userId, message -> {
+							topMatchesChanges.close();
+							sockJSSocket.close();
+						});
 					}
 					return;
 				}
