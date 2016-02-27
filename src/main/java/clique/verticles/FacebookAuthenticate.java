@@ -22,6 +22,7 @@ import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpMethod;
+import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
@@ -86,7 +87,19 @@ public class FacebookAuthenticate extends AbstractVerticle {
 						sockJSSocket.close();
 					} else {
 						sockJSSocket.write(Buffer.buffer(new JsonObject().put("realId", userId).toString()));
-						sockJSSocket.close();
+
+						TopMatchesChanges topMatchesChanges = new TopMatchesChanges(userId);
+
+						topMatchesChanges.getObservable().subscribe(data -> {
+							sockJSSocket.write(Buffer.buffer(Json.encode(data)));
+						});
+
+						sockJSSocket.endHandler(aVoid -> topMatchesChanges.close());
+
+						vertx.eventBus().consumer("finishedAllChanges:" + userId, message -> {
+							topMatchesChanges.close();
+							sockJSSocket.close();
+						});
 					}
 					return;
 				}

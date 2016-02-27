@@ -40,6 +40,7 @@ public class SharedTableDataInsertionHandler extends AbstractVerticle {
 				DBConfig.execute(r.tableDrop(tableName));
 				future.complete();
 			} , false, res -> {
+				vertx.eventBus().publish("finishedAllChanges:" + userId, userId);
 				System.out.println("Finish shared result");
 			});
 		});
