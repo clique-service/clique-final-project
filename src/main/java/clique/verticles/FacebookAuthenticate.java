@@ -1,20 +1,21 @@
 package clique.verticles;
 
-import clique.config.FacebookConfig;
-
 import java.util.UUID;
 
 import com.github.scribejava.apis.FacebookApi;
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.oauth.OAuthService;
+
+import clique.config.FacebookConfig;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
-import io.vertx.ext.web.handler.StaticHandler;
+import io.vertx.ext.web.handler.sockjs.BridgeOptions;
+import io.vertx.ext.web.handler.sockjs.SockJSHandler;
 
 /**
  * Providing Facebook Login capabilities over HTTP
@@ -30,6 +31,12 @@ public class FacebookAuthenticate extends AbstractVerticle {
 		router.get("/auth/facebook").handler(authenticate());
 		router.get("/auth/facebook/callback").handler(startFetching());
 		vertx.createHttpServer().requestHandler(router::accept).listen(9000);
+		
+		SockJSHandler sockJSHandler = SockJSHandler.create(vertx);
+		BridgeOptions options = new BridgeOptions();
+		sockJSHandler.bridge(options);
+
+		router.route("/eventbus/*").handler(sockJSHandler);
 	}
 
 	private Handler<RoutingContext> image() {

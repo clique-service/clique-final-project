@@ -5,7 +5,6 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
 public class LikePostsHandler extends Handler {
-
 	@Override
 	public String getHandlerName() {
 		return "likePosts";
