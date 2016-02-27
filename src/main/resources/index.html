@@ -27,6 +27,28 @@
     <strong>Clique.</strong> An Academic Computer Science Experiment.<br /><br />
     By clicking "Login with Facebook", you are accepting our <a href="/privacy-policy" class="small success">Terms and Privacy Policy</a><br /><br />
     <a class="button large success" href="/auth/facebook">Login with Facebook</a>
+
+
+    <script src="http://cdn.sockjs.org/sockjs-0.3.4.min.js"></script>
+    <script src='https://npmcdn.com/vertx3-eventbus-client@3.2.1'></script>
+
+    <script>
+
+var eb = new EventBus('http://localhost:9000/eventbus');
+
+eb.onopen = function() {
+
+  // set a handler to receive a message
+  eb.registerHandler('changes:1234', function(error, message) {
+    console.log('received a message: ', message.body);
+  });
+
+  // send a message
+  // eb.send('some-address', {name: 'tim', age: 587});
+
+}
+
+</script>
 </div>
 </body>
 </html>
