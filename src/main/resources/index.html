@@ -28,27 +28,22 @@
     By clicking "Login with Facebook", you are accepting our <a href="/privacy-policy" class="small success">Terms and Privacy Policy</a><br /><br />
     <a class="button large success" href="/auth/facebook">Login with Facebook</a>
 
-
     <script src="http://cdn.sockjs.org/sockjs-0.3.4.min.js"></script>
-    <script src='https://npmcdn.com/vertx3-eventbus-client@3.2.1'></script>
-
     <script>
+        var sock = new SockJS('/eventbus');
 
-var eb = new EventBus('http://localhost:9000/eventbus');
+sock.onopen = function() {
+  console.log('open');
+};
 
-eb.onopen = function() {
+sock.onmessage = function(e) {
+  console.log('message', e.data);
+};
 
-  // set a handler to receive a message
-  eb.registerHandler('changes:1234', function(error, message) {
-    console.log('received a message: ', message.body);
-  });
-
-  // send a message
-  // eb.send('some-address', {name: 'tim', age: 587});
-
-}
-
-</script>
+sock.onclose = function() {
+  console.log('close');
+};
+    </script>
 </div>
 </body>
 </html>
