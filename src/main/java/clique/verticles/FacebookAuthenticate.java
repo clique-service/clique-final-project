@@ -86,6 +86,7 @@ public class FacebookAuthenticate extends AbstractVerticle {
 						sockJSSocket.close();
 					} else {
 						sockJSSocket.write(Buffer.buffer(new JsonObject().put("realId", userId).toString()));
+						sockJSSocket.close();
 					}
 					return;
 				}
