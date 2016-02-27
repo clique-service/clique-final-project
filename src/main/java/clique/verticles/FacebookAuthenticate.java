@@ -11,10 +11,15 @@ import clique.config.FacebookConfig;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpClient;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
+import io.vertx.ext.web.handler.CorsHandler;
+import io.vertx.ext.web.handler.OAuth2AuthHandler;
+import io.vertx.ext.web.handler.sockjs.BridgeEventType;
 import io.vertx.ext.web.handler.sockjs.BridgeOptions;
+import io.vertx.ext.web.handler.sockjs.PermittedOptions;
 import io.vertx.ext.web.handler.sockjs.SockJSHandler;
 
 /**
@@ -33,8 +38,19 @@ public class FacebookAuthenticate extends AbstractVerticle {
 		vertx.createHttpServer().requestHandler(router::accept).listen(9000);
 		
 		SockJSHandler sockJSHandler = SockJSHandler.create(vertx);
-		BridgeOptions options = new BridgeOptions();
-		sockJSHandler.bridge(options);
+		BridgeOptions options = new BridgeOptions().addOutboundPermitted(new PermittedOptions().setAddressRegex("changes:\\d+"));
+		sockJSHandler.bridge(options, bridgeEvent -> {
+			BridgeEventType type = bridgeEvent.type();
+			if (type == BridgeEventType.SOCKET_CREATED) {
+				System.out.println("connected");
+				// TODO: close the connection!
+//				vertx.eventBus().consumer("finished");
+			} else if (type == BridgeEventType.SOCKET_CLOSED) {
+				System.out.println("closed");
+			}
+
+			bridgeEvent.complete(true);
+		});
 
 		router.route("/eventbus/*").handler(sockJSHandler);
 	}
