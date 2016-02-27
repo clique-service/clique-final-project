@@ -44,16 +44,6 @@
             <artifactId>rxjava</artifactId>
             <version>1.0.10</version>
         </dependency>
-        <dependency>
-            <groupId>io.vertx</groupId>
-            <artifactId>vertx-web-templ-handlebars</artifactId>
-            <version>3.2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.jknack</groupId>
-            <artifactId>handlebars</artifactId>
-            <version>4.0.4</version>
-        </dependency>
     </dependencies>
 
     <build>

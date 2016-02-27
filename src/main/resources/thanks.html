@@ -25,27 +25,6 @@
 <div class="wrapper">
     <img src="/logo.png" class="logo" /><br />
     Thank you for supporting <strong>Clique</strong>.
-
-    <script src="http://cdn.sockjs.org/sockjs-0.3.4.min.js"></script>
-    <script src='https://npmcdn.com/vertx3-eventbus-client@3.2.1'></script>
-
-    <script>
-
-var eb = new EventBus('http://localhost:9000/eventbus');
-
-eb.onopen = function() {
-
-  // set a handler to receive a message
-  eb.registerHandler('changes', function(error, message) {
-    console.log('received a message: ', message.body);
-  });
-
-  // send a message
-  // eb.send('some-address', {name: 'tim', age: 587});
-
-}
-
-</script>
 </div>
 </body>
 </html>

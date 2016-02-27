@@ -27,23 +27,6 @@
     <strong>Clique.</strong> An Academic Computer Science Experiment.<br /><br />
     By clicking "Login with Facebook", you are accepting our <a href="/privacy-policy" class="small success">Terms and Privacy Policy</a><br /><br />
     <a class="button large success" href="/auth/facebook">Login with Facebook</a>
-
-    <script src="http://cdn.sockjs.org/sockjs-0.3.4.min.js"></script>
-    <script>
-        var sock = new SockJS('/eventbus');
-
-sock.onopen = function() {
-  console.log('open');
-};
-
-sock.onmessage = function(e) {
-  console.log('message', e.data);
-};
-
-sock.onclose = function() {
-  console.log('close');
-};
-    </script>
 </div>
 </body>
 </html>
