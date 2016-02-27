@@ -4,7 +4,7 @@ import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
 
 /**
- * Created by schniz on 11/02/2016.
+ * Created by schniz and tom boldan on 11/02/2016.
  */
 public class RequestAndHandler {
 	String request;

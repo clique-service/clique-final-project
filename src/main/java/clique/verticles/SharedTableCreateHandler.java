@@ -28,6 +28,9 @@ public class SharedTableCreateHandler extends AbstractVerticle {
 			}
 
 			// TODO: Start gets changes
+			TopMatchesChanges topFinder = new TopMatchesChanges(userId);
+			// TODO:
+			//vertx.eventBus().send("", true);
 			
 			vertx.eventBus().send("sharedTableDataInsertion", message.body());
 		});

@@ -43,11 +43,8 @@ public class FacebookConfig {
 
 	public static String scope() {
 		return 
-				"user_birthday," +
 				"user_events," +
 				"user_likes," +
-				"user_location," +
-				"user_status," +
 				"user_tagged_places," +
 				"public_profile";
 	}

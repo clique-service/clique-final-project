@@ -10,7 +10,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by schniz on 11/02/2016.
+ * Created by schniz and tom boldan on 11/02/2016.
  *
  * This class handles http throttling for our app
  * this should get us blocked by facebook after more time

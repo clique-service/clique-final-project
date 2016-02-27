@@ -36,10 +36,12 @@ public class SharedTableDataInsertionHandler extends AbstractVerticle {
 				DBConfig.execute(r.table("CliqueResults").insert(
 						r.hashMap().with("userId", userId).with("date", r.now()).with("results", sortedResults)));
 
+				// TODOl Say that its finish
 				DBConfig.execute(r.tableDrop(tableName));
 				future.complete();
 			} , false, res -> {
 				System.out.println("Finish shared result");
+				
 			});
 		});
 
