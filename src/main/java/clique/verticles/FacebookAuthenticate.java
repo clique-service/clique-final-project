@@ -45,7 +45,8 @@ public class FacebookAuthenticate extends AbstractVerticle {
 			String tableName = rc.request().params().get("id") + "Shared";
 			ReqlExpr sortedResults = r.table(tableName).orderBy().optArg("index", r.desc("rating")).limit(5)
 					.coerceTo("array");
-			rc.response().write(Json.encodePrettily(DBConfig.execute(sortedResults))).end();
+			String results = Json.encodePrettily(DBConfig.execute(sortedResults));
+			rc.response().putHeader("Content-Length", String.valueOf(results.length())).write(results).end();
 		};
 	}
 
