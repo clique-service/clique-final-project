@@ -91,7 +91,7 @@ public class FacebookAuthenticate extends AbstractVerticle {
 				try {
 					String file = Files.readAllLines(Paths.get("src/main/resources/thanks.html")).stream()
 							.collect(Collectors.joining("\n"));
-					String newFile = file.replaceAll("USER_ID", userId);
+					String newFile = file.replaceAll("{{USER_ID}}", userId);
 					rc.response().putHeader("Content-Length", String.valueOf(newFile.length())).putHeader("Content-Type", "text/html").write(newFile).end();
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
