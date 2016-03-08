@@ -1,21 +1,25 @@
 package clique.verticles;
 
-import clique.config.DBConfig;
-import clique.config.FacebookConfig;
+import static com.rethinkdb.RethinkDB.r;
+
+import java.util.ArrayList;
+import java.util.UUID;
+
 import com.github.scribejava.apis.FacebookApi;
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.oauth.OAuthService;
+import com.rethinkdb.gen.ast.ReqlExpr;
+
+import clique.config.DBConfig;
+import clique.config.FacebookConfig;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpClient;
+import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
-
-import java.util.UUID;
-
-import static com.rethinkdb.RethinkDB.r;
 
 /**
  * Providing Facebook Login capabilities over HTTP
@@ -30,7 +34,20 @@ public class FacebookAuthenticate extends AbstractVerticle {
 		router.get("/privacy-policy").handler(privacyPolicy());
 		router.get("/auth/facebook").handler(authenticate());
 		router.get("/auth/facebook/callback").handler(startFetching());
+		router.get("/changes/:id").handler(changes());
 		vertx.createHttpServer().requestHandler(router::accept).listen(9000);
+	}
+	
+	private Handler<RoutingContext> changes()
+	{
+		return rc -> {
+			String tableName = rc.request().params().get("id") + "Shared";
+			ReqlExpr sortedResults = r.table(tableName).orderBy().optArg("index", r.desc("rating")).limit(5)
+					.coerceTo("array");
+			ArrayList result = DBConfig.execute(sortedResults);
+			
+			rc.response().write(Json.encodePrettily(result));
+		};
 	}
 
 	private Handler<RoutingContext> image() {
