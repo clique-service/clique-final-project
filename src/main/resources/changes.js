@@ -12,13 +12,30 @@ function getID()
   return window.USER_ID;
 }
 
-setInterval(function(){
-  getChanges().then(function(data)
-  {
-    console.log(data);
-    updateUsersDiv(data);
-  })
-}, 1000);
+function handleData(data) {
+    switch (data.action) {
+        case ("FINISHED"): {
+            $("#results-title").text("Final Results:");
+            clearInterval(window.fetchInterval);
+            updateUsersDiv(data.users);
+            break;
+        }
+        case ("WAIT_NO_DATA"): {
+            break;
+        }
+        case ("SHOW_USERS"): {
+            updateUsersDiv(data.users);
+            break;
+        }
+    }
+}
+
+function callChanges() {
+  getChanges().then(handleData);
+}
+
+window.fetchInterval = setInterval(callChanges, 10000);
+callChanges();
 
 function buildUser(user)
 {

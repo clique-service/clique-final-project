@@ -4,6 +4,7 @@ import static com.rethinkdb.RethinkDB.r;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -44,11 +45,28 @@ public class FacebookAuthenticate extends AbstractVerticle {
 
 	private Handler<RoutingContext> changes() {
 		return rc -> {
-			String tableName = rc.request().params().get("id") + "Shared";
-			ReqlExpr sortedResults = r.table(tableName).orderBy().optArg("index", r.desc("rating")).limit(5)
-					.coerceTo("array");
-			String results = Json.encodePrettily(DBConfig.execute(sortedResults));
-			rc.response().putHeader("Content-Length", String.valueOf(results.length())).write(results).end();
+			JsonObject jsonObject = new JsonObject();
+			String userId = rc.request().params().get("id");
+			String tableName = userId + "Shared";
+			boolean tableExists = Boolean.valueOf(DBConfig.execute(r.tableList().contains(tableName)).toString());
+
+			if (tableExists) {
+				ReqlExpr sortedResults = r.table(tableName).orderBy().optArg("index", r.desc("rating")).limit(5)
+						.coerceTo("array");
+				List results = DBConfig.execute(sortedResults);
+				jsonObject = new JsonObject().put("users", results).put("action", results.size() < 1 ? "WAIT_NO_DATA" : "SHOW_USERS");
+			} else {
+				ReqlExpr sortedResults = r.table("CliqueResults").filter(r.row("userId", userId)).orderBy(r.desc("date")).limit(1).coerceTo("array");
+				List results = DBConfig.execute(sortedResults);
+				if (results.size() < 1) {
+					jsonObject = new JsonObject().put("action", "WAIT_NO_DATA");
+				} else {
+					jsonObject = new JsonObject().put("users", results.get(0)).put("action", "FINISHED");
+				}
+			}
+
+			String jsonString = jsonObject.toString();
+			rc.response().putHeader("Content-Length", String.valueOf(jsonString.length())).putHeader("Content-Type", "application/json").write(jsonString).end();
 		};
 	}
 
@@ -83,7 +101,7 @@ public class FacebookAuthenticate extends AbstractVerticle {
 
 	/**
 	 * Get the code from the user
-	 * 
+	 *
 	 * @return Handler that fetches
 	 */
 	private Handler<RoutingContext> startFetching() {
@@ -107,13 +125,12 @@ public class FacebookAuthenticate extends AbstractVerticle {
 	/**
 	 * Fetches an access token for the provided Facebook Authentication code
 	 *
-	 * @param code
-	 *            provided by facebook
+	 * @param code provided by facebook
 	 */
-	private void fetchToken(String code, Handler<String> handler) {
+	private void fetchToken(String code, Handler<String> foundUserIdHandler) {
 		HttpClient facebookClient = FacebookConfig.getHttpFacebookClient(vertx);
 		facebookClient.getNow("/v2.5/oauth/access_token?client_id=" + FacebookConfig.appId() + "&redirect_uri="
-				+ FacebookConfig.redirectURI() + "&client_secret=" + FacebookConfig.appSecret() + "&code=" + code,
+						+ FacebookConfig.redirectURI() + "&client_secret=" + FacebookConfig.appSecret() + "&code=" + code,
 				response -> {
 					if (response.statusCode() != 200) {
 						return;
@@ -130,8 +147,8 @@ public class FacebookAuthenticate extends AbstractVerticle {
 							meResponse.bodyHandler(meBody -> {
 								System.out.println("got " + meBody.toJsonObject());
 								String id = meBody.toJsonObject().getString("id");
-								handler.handle(id);
 								createChangesTable(id);
+								foundUserIdHandler.handle(id);
 								onAuthenticated(accessToken, id);
 							});
 						});
@@ -153,11 +170,9 @@ public class FacebookAuthenticate extends AbstractVerticle {
 	/**
 	 * Happens when a user authenticates successfully with an access token and
 	 * an ID Its launching the fetchers, basically.
-	 * 
-	 * @param accessToken
-	 *            to grab data from facebook with
-	 * @param userId
-	 *            that was authenticated
+	 *
+	 * @param accessToken to grab data from facebook with
+	 * @param userId      that was authenticated
 	 */
 	private void onAuthenticated(String accessToken, String userId) {
 		vertx.eventBus().send("userToken", new JsonObject().put("userId", userId).put("accessToken", accessToken));
