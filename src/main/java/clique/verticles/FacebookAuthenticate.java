@@ -2,7 +2,6 @@ package clique.verticles;
 
 import static com.rethinkdb.RethinkDB.r;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 import com.github.scribejava.apis.FacebookApi;
@@ -43,10 +42,8 @@ public class FacebookAuthenticate extends AbstractVerticle {
 		return rc -> {
 			String tableName = rc.request().params().get("id") + "Shared";
 			ReqlExpr sortedResults = r.table(tableName).orderBy().optArg("index", r.desc("rating")).limit(5)
-					.coerceTo("array");
-			ArrayList result = DBConfig.execute(sortedResults);
-			
-			rc.response().write(Json.encodePrettily(result));
+					.coerceTo("array");			
+			rc.response().write(Json.encodePrettily(DBConfig.execute(sortedResults)));
 		};
 	}
 
