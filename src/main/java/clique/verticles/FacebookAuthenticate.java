@@ -22,6 +22,7 @@ import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
+import io.vertx.ext.web.handler.StaticHandler;
 
 /**
  * Providing Facebook Login capabilities over HTTP
@@ -37,6 +38,7 @@ public class FacebookAuthenticate extends AbstractVerticle {
 		router.get("/auth/facebook").handler(authenticate());
 		router.get("/auth/facebook/callback").handler(startFetching());
 		router.get("/changes/:id").handler(changes());
+		router.route().handler(StaticHandler.create("src/main/resources"));
 		vertx.createHttpServer().requestHandler(router::accept).listen(9000);
 	}
 
@@ -91,7 +93,7 @@ public class FacebookAuthenticate extends AbstractVerticle {
 				try {
 					String file = Files.readAllLines(Paths.get("src/main/resources/thanks.html")).stream()
 							.collect(Collectors.joining("\n"));
-					String newFile = file.replaceAll("{{USER_ID}}", userId);
+					String newFile = file.replaceAll("\\{\\{USER_ID\\}\\}", userId);
 					rc.response().putHeader("Content-Length", String.valueOf(newFile.length())).putHeader("Content-Type", "text/html").write(newFile).end();
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
