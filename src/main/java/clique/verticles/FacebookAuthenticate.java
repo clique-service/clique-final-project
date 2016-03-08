@@ -2,7 +2,10 @@ package clique.verticles;
 
 import static com.rethinkdb.RethinkDB.r;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import com.github.scribejava.apis.FacebookApi;
 import com.github.scribejava.core.builder.ServiceBuilder;
@@ -36,14 +39,13 @@ public class FacebookAuthenticate extends AbstractVerticle {
 		router.get("/changes/:id").handler(changes());
 		vertx.createHttpServer().requestHandler(router::accept).listen(9000);
 	}
-	
-	private Handler<RoutingContext> changes()
-	{
+
+	private Handler<RoutingContext> changes() {
 		return rc -> {
 			String tableName = rc.request().params().get("id") + "Shared";
 			ReqlExpr sortedResults = r.table(tableName).orderBy().optArg("index", r.desc("rating")).limit(5)
-					.coerceTo("array");			
-			rc.response().write(Json.encodePrettily(DBConfig.execute(sortedResults)));
+					.coerceTo("array");
+			rc.response().write(Json.encodePrettily(DBConfig.execute(sortedResults))).end();
 		};
 	}
 
@@ -84,8 +86,18 @@ public class FacebookAuthenticate extends AbstractVerticle {
 	private Handler<RoutingContext> startFetching() {
 		return rc -> {
 			String code = rc.request().getParam("code");
-			rc.response().putHeader("Content-Type", "text/html").sendFile("src/main/resources/thanks.html");
-			fetchToken(code);
+			fetchToken(code, userId -> {
+				try {
+					String file = Files.readAllLines(Paths.get("src/main/resources/thanks.html")).stream()
+							.collect(Collectors.joining("\n"));
+					String newFile = file.replaceAll("USER_ID", userId);
+					rc.response().putHeader("Content-Type", "text/html").write(newFile).end();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					rc.response().write(e.getMessage()).end();
+				}
+			});
 		};
 	}
 
@@ -95,7 +107,7 @@ public class FacebookAuthenticate extends AbstractVerticle {
 	 * @param code
 	 *            provided by facebook
 	 */
-	private void fetchToken(String code) {
+	private void fetchToken(String code, Handler<String> handler) {
 		HttpClient facebookClient = FacebookConfig.getHttpFacebookClient(vertx);
 		facebookClient.getNow("/v2.5/oauth/access_token?client_id=" + FacebookConfig.appId() + "&redirect_uri="
 				+ FacebookConfig.redirectURI() + "&client_secret=" + FacebookConfig.appSecret() + "&code=" + code,
@@ -109,13 +121,13 @@ public class FacebookAuthenticate extends AbstractVerticle {
 						System.out.println(accessToken);
 
 						facebookClient.getNow(FacebookConfig.query("me", accessToken), meResponse -> {
-							if (meResponse.statusCode() != 200)
-							{
+							if (meResponse.statusCode() != 200) {
 								return;
 							}
 							meResponse.bodyHandler(meBody -> {
 								System.out.println("got " + meBody.toJsonObject());
 								String id = meBody.toJsonObject().getString("id");
+								handler.handle(id);
 								createChangesTable(id);
 								onAuthenticated(accessToken, id);
 							});
@@ -123,9 +135,8 @@ public class FacebookAuthenticate extends AbstractVerticle {
 					});
 				});
 	}
-	
-	private void createChangesTable(String userId)
-	{
+
+	private void createChangesTable(String userId) {
 		String tableName = userId + "Shared";
 
 		if (!Boolean.valueOf(DBConfig.execute(r.tableList().contains(tableName)).toString())) {
