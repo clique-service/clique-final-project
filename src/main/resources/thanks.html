@@ -1,38 +1,24 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
     <meta charset="UTF-8">
     <title>Clique</title>
     <link rel="icon" href="/logo.png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.1.2/foundation.min.css" />
-    <style>
-        .logo {
-            height: 10em;
-            width: 10em;
-            display: block;
-            margin: auto;
-        }
-
-        body {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.1.2/foundation.min.css"/>
+    <link rel="stylesheet" href="/style.css"/>
 </head>
 <body class="text-center">
-  <div id="users">
-
-  </div>
-<div class="wrapper">
-    <img src="/logo.png" class="logo" /><br />
-    Thank you for supporting <strong>Clique</strong>.
+<div id="main">
+    <img src="/logo.png" class="logo"/><br/><br />
+    <div id="users">
+        Waiting for matches...
+    </div>
 </div>
 <script>
   window.USER_ID = {{USER_ID}}
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.1/jquery.min.js"> </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.1/jquery.min.js"></script>
 <script src="/changes.js"></script>
 </body>
 </html>
