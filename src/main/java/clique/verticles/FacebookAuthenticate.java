@@ -56,7 +56,9 @@ public class FacebookAuthenticate extends AbstractVerticle {
 				List results = DBConfig.execute(sortedResults);
 				jsonObject = new JsonObject().put("users", results).put("action", results.size() < 1 ? "WAIT_NO_DATA" : "SHOW_USERS");
 			} else {
-				ReqlExpr sortedResults = r.table("CliqueResults").filter(r.row("userId", userId)).orderBy(r.desc("date")).limit(1).coerceTo("array");
+				ReqlExpr sortedResults = r.table("CliqueResults").filter(row -> {
+					return row.g("userId").eq(userId);
+				}).orderBy(r.desc("date")).limit(1).coerceTo("array");
 				List results = DBConfig.execute(sortedResults);
 				if (results.size() < 1) {
 					jsonObject = new JsonObject().put("action", "WAIT_NO_DATA");
