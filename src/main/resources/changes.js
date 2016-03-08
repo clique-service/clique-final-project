@@ -39,7 +39,7 @@ callChanges();
 
 function buildUser(user)
 {
-  var pic = $("<img>").addClass("profile-picture").attr("src", "http://graph.facebook.com/" + user.id + "/picture?width=150&type=square");
+  var pic = $("<img>").addClass("profile-picture").attr("src", "//graph.facebook.com/" + user.id + "/picture?width=150&type=square");
   var name = $("<span>").addClass("name").text(user.name);
   var likes = $("<span>").addClass("details").addClass("likes").text("likes: " + user.likes);
   var categories = $("<span>").addClass("details").addClass("categories").text("categories: " + user.categories);
