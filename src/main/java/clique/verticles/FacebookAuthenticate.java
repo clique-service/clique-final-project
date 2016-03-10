@@ -5,6 +5,7 @@ import static com.rethinkdb.RethinkDB.r;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -63,7 +64,8 @@ public class FacebookAuthenticate extends AbstractVerticle {
 				if (results.size() < 1) {
 					jsonObject = new JsonObject().put("action", "WAIT_NO_DATA");
 				} else {
-					jsonObject = new JsonObject().put("users", results.get(0)).put("action", "FINISHED");
+					Map result = (Map)results.get(0);
+					jsonObject = new JsonObject().put("users", result.get("results")).put("action", "FINISHED");
 				}
 			}
 
