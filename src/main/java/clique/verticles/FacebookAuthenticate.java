@@ -87,7 +87,7 @@ public class FacebookAuthenticate extends AbstractVerticle {
 			}
 
 			String jsonString = jsonObject.toString();
-			rc.response().putHeader("Content-Length", String.valueOf(jsonString.length())).putHeader("Content-Type", "application/json").write(jsonString).end();
+			rc.response().putHeader("Content-Type", "application/json").end(jsonString);
 		};
 	}
 
