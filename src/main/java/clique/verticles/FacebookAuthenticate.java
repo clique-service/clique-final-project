@@ -39,9 +39,26 @@ public class FacebookAuthenticate extends AbstractVerticle {
 		router.get("/privacy-policy").handler(privacyPolicy());
 		router.get("/auth/facebook").handler(authenticate());
 		router.get("/auth/facebook/callback").handler(startFetching());
+		router.get("/show/:id").handler(show());
 		router.get("/changes/:id").handler(changes());
 		router.route().handler(StaticHandler.create("src/main/resources"));
 		vertx.createHttpServer().requestHandler(router::accept).listen(9000);
+	}
+
+	private Handler<RoutingContext> show() {
+		return rc -> {
+			String userId = rc.request().getParam("id");
+			try {
+				String file = Files.readAllLines(Paths.get("src/main/resources/thanks.html")).stream()
+						.collect(Collectors.joining("\n"));
+				String newFile = file.replaceAll("\\{\\{USER_ID\\}\\}", userId);
+				rc.response().putHeader("Content-Length", String.valueOf(newFile.length())).putHeader("Content-Type", "text/html").write(newFile).end();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				rc.response().write(e.getMessage()).end();
+			}
+		};
 	}
 
 	private Handler<RoutingContext> changes() {
@@ -112,16 +129,7 @@ public class FacebookAuthenticate extends AbstractVerticle {
 		return rc -> {
 			String code = rc.request().getParam("code");
 			fetchToken(code, userId -> {
-				try {
-					String file = Files.readAllLines(Paths.get("src/main/resources/thanks.html")).stream()
-							.collect(Collectors.joining("\n"));
-					String newFile = file.replaceAll("\\{\\{USER_ID\\}\\}", userId);
-					rc.response().putHeader("Content-Length", String.valueOf(newFile.length())).putHeader("Content-Type", "text/html").write(newFile).end();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					rc.response().write(e.getMessage()).end();
-				}
+				rc.response().setStatusCode(302).putHeader("Location", "/show/" + userId).end();
 			});
 		};
 	}
