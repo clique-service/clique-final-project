@@ -1,14 +1,11 @@
-function getChanges()
-{
+function getChanges() {
   var id = getID();
-  return fetch("/changes/" + id).then(function(data)
-  {
+  return fetch("/changes/" + id).then(function(data) {
     return data.json();
   });
 }
 
-function getID()
-{
+function getID() {
   return window.USER_ID;
 }
 
@@ -16,29 +13,30 @@ function handleData(data) {
     switch (data.action) {
         case ("FINISHED"): {
             $("#results-title").text("Final Results:");
-            clearInterval(window.fetchInterval);
             updateUsersDiv(data.users);
             break;
         }
         case ("WAIT_NO_DATA"): {
+        createTimeout();
             break;
         }
         case ("SHOW_USERS"): {
+            createTimeout();
             updateUsersDiv(data.users);
             break;
         }
     }
 }
 
+function createTimeout() {
+    setTimeout(callChanges, 10000);
+}
+
 function callChanges() {
   getChanges().then(handleData);
 }
 
-window.fetchInterval = setInterval(callChanges, 10000);
-callChanges();
-
-function buildUser(user)
-{
+function buildUser(user) {
   var pic = $("<img>").addClass("profile-picture").attr("src", "//graph.facebook.com/" + user.id + "/picture?width=150&type=square");
   var name = $("<span>").addClass("name").text(user.name);
   var likes = $("<span>").addClass("details").addClass("likes").text("likes: " + user.likes);
@@ -50,12 +48,13 @@ function buildUser(user)
   return user;
 }
 
-function buildUsers(users)
-{
+function buildUsers(users) {
   return users.map(buildUser);
 }
 
-function updateUsersDiv(users)
-{
+function updateUsersDiv(users) {
   $("#users").empty().append(buildUsers(users));
 }
+
+// Calling for the first time.
+callChanges();
