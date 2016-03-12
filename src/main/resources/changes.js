@@ -2,6 +2,9 @@ function getChanges() {
   var id = getID();
   return fetch("/changes/" + id).then(function(data) {
     return data.json();
+  }).catch(function(error) {
+    createTimeout();
+    throw error;
   });
 }
 
@@ -17,7 +20,7 @@ function handleData(data) {
             break;
         }
         case ("WAIT_NO_DATA"): {
-        createTimeout();
+            createTimeout();
             break;
         }
         case ("SHOW_USERS"): {
