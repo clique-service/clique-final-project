@@ -16,6 +16,7 @@ function handleData(data) {
     switch (data.action) {
         case ("FINISHED"): {
             $("#results-title").text("Final Results:");
+            $("#logo").removeClass("rotate");
             updateUsersDiv(data.users);
             break;
         }
