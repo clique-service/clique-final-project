@@ -37,6 +37,7 @@ body {
 .name {
     display: block;
     text-align: center;
+    font-weight: bolder;
 }
 
 .rotate {
