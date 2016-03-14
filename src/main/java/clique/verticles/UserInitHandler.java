@@ -2,6 +2,8 @@ package clique.verticles;
 
 import static com.rethinkdb.RethinkDB.r;
 
+import com.rethinkdb.gen.ast.ReqlExpr;
+
 import clique.config.DBConfig;
 import clique.config.FacebookConfig;
 import clique.helpers.FinishChecker;
@@ -68,11 +70,17 @@ public class UserInitHandler extends AbstractVerticle {
 	private void saveUser(JsonObject userData) {
 		System.out.println("Saving user...");
 
-		userData.put("events", new JsonArray());
-		userData.put("likes", new JsonArray());
-		userData.put("places", new JsonArray());
-		userData.put("categories", new JsonArray());
-
-		DBConfig.execute(r.table("Users").insert(JsonToPureJava.toJava(userData)).optArg("conflict", "replace"));
+		JsonObject defaults = new JsonObject();
+		defaults.put("events", new JsonArray());
+		defaults.put("likes", new JsonArray());
+		defaults.put("places", new JsonArray());
+		defaults.put("categories", new JsonArray());
+		
+		
+		ReqlExpr user = r.table("Users").get(userData.getString("id")).default_(false);
+		ReqlExpr insert = r.table("Users").insert(JsonToPureJava.toJava(userData.copy().mergeIn(defaults))).optArg("conflict", "replace");
+		ReqlExpr update = user.update(JsonToPureJava.toJava(userData));
+		
+		DBConfig.execute(r.branch(user, update, insert));
 	}
 }
