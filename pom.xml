@@ -8,12 +8,11 @@
 	<version>1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<properties>
-		<!-- the main verticle class name -->
 		<main.verticle>Test</main.verticle>
 	</properties>
+	
 
 	<build>
-
 		<pluginManagement>
 			<plugins>
 				<!-- We specify the Maven compiler plugin as we need to set it to Java 
@@ -55,12 +54,19 @@
 								<transformer
 									implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 									<resource>META-INF/services/io.vertx.core.spi.VerticleFactory</resource>
+									<resource>src/main/resources</resource>
 								</transformer>
 							</transformers>
 							<artifactSet>
 							</artifactSet>
-							<outputFile>${project.build.directory}/${project.artifactId}-${project.version}-fat.jar
-							</outputFile>
+							<filters>
+								<filter>
+									<includes>
+										<include>src</include>
+									</includes>
+								</filter>
+							</filters>
+							<outputFile>${project.build.directory}/${project.artifactId}-${project.version}-fat.jar</outputFile>
 						</configuration>
 					</execution>
 				</executions>
@@ -96,33 +102,6 @@
 								<argument>-jar</argument>
 								<argument>target/${project.artifactId}-${project.version}-fat.jar</argument>
 							</arguments>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>2.3</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-						<configuration>
-							<transformers>
-								<transformer
-									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<manifestEntries>
-										<Main-Class>Main</Main-Class>
-									</manifestEntries>
-								</transformer>
-							</transformers>
-							<artifactSet />
-							<outputFile>${project.build.directory}/${project.artifactId}-${project.version}-fat.jar
-							</outputFile>
 						</configuration>
 					</execution>
 				</executions>

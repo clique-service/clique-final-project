@@ -8,6 +8,10 @@
 	</parent>
 	<artifactId>Web</artifactId>
 	<name>Web</name>
+	
+	<properties>
+		<main.verticle>clique.verticles.FacebookAuthenticate</main.verticle>
+	</properties>
 
 	<dependencies>
 		<dependency>
