@@ -40,5 +40,10 @@
 			<artifactId>UserTokenHandler</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>clique</groupId>
+			<artifactId>UserInitHandler</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 </project>
