@@ -20,7 +20,6 @@ import clique.config.FacebookConfig;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpClient;
-import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
@@ -54,7 +53,6 @@ public class FacebookAuthenticate extends AbstractVerticle {
 				String newFile = file.replaceAll("\\{\\{USER_ID\\}\\}", userId);
 				rc.response().putHeader("Content-Length", String.valueOf(newFile.length())).putHeader("Content-Type", "text/html").write(newFile).end();
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				rc.response().write(e.getMessage()).end();
 			}
