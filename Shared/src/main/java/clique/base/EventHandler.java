@@ -1,4 +1,4 @@
-package clique.verticles;
+package clique.base;
 
 import static com.rethinkdb.RethinkDB.r;
 
@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.rethinkdb.gen.ast.ReqlExpr;
 
+import clique.base.Handler;
 import clique.config.DBConfig;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.JsonArray;

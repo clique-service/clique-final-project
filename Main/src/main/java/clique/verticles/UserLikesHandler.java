@@ -5,6 +5,7 @@ import static com.rethinkdb.RethinkDB.r;
 import java.util.ArrayList;
 import java.util.List;
 
+import clique.base.Handler;
 import clique.config.DBConfig;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.JsonArray;
