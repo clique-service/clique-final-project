@@ -128,5 +128,6 @@
 		<module>Web</module>
 		<module>UserTokenHandler</module>
 		<module>UserInitHandler</module>
+		<module>SharedTableDataInsertionHandler</module>
 	</modules>
 </project>
