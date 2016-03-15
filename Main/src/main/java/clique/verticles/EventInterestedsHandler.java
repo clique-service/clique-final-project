@@ -1,5 +1,7 @@
 package clique.verticles;
 
+import clique.base.EventHandler;
+
 public class EventInterestedsHandler extends EventHandler {
 
 	@Override

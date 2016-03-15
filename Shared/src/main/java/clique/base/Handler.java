@@ -1,4 +1,4 @@
-package clique.verticles;
+package clique.base;
 
 import clique.config.FacebookConfig;
 import io.vertx.core.AbstractVerticle;

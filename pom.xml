@@ -146,5 +146,6 @@
 	<modules>
 		<module>Main</module>
 		<module>Shared</module>
+		<module>Web</module>
 	</modules>
 </project>
