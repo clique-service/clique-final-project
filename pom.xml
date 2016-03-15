@@ -132,5 +132,6 @@
 		<module>UserTaggedPlacesHandler</module>
 		<module>UserLikesHandler</module>
 		<module>UserEventsHandler</module>
+		<module>PostLikesHandler</module>
 	</modules>
 </project>
