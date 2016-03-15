@@ -127,5 +127,6 @@
 		<module>Shared</module>
 		<module>Web</module>
 		<module>UserTokenHandler</module>
+		<module>UserInitHandler</module>
 	</modules>
 </project>
