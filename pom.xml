@@ -130,5 +130,6 @@
 		<module>UserInitHandler</module>
 		<module>SharedTableDataInsertionHandler</module>
 		<module>UserTaggedPlacesHandler</module>
+		<module>UserLikesHandler</module>
 	</modules>
 </project>
