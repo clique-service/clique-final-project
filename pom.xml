@@ -133,5 +133,6 @@
 		<module>UserLikesHandler</module>
 		<module>UserEventsHandler</module>
 		<module>PostLikesHandler</module>
+		<module>LikePostsHandler</module>
 	</modules>
 </project>
