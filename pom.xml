@@ -129,5 +129,6 @@
 		<module>UserTokenHandler</module>
 		<module>UserInitHandler</module>
 		<module>SharedTableDataInsertionHandler</module>
+		<module>UserTaggedPlacesHandler</module>
 	</modules>
 </project>
