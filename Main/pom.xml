@@ -35,9 +35,9 @@
 			<version>2.1.0</version>
 		</dependency>
 		<dependency>
-			<groupId>io.reactivex</groupId>
-			<artifactId>rxjava</artifactId>
-			<version>1.0.10</version>
+			<groupId>clique</groupId>
+			<artifactId>Shared</artifactId>
+			<version>1.0-SNAPSHOT</version>
 		</dependency>
-	</dependencies>
+  </dependencies>
 </project>
