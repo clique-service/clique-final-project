@@ -52,9 +52,13 @@
 									</manifestEntries>
 								</transformer>
 								<transformer
+										implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+									<resource>src/main/resources/</resource>
+									<file>src/main/resources/*</file>
+								</transformer>
+								<transformer
 									implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 									<resource>META-INF/services/io.vertx.core.spi.VerticleFactory</resource>
-									<resource>src/main/resources</resource>
 								</transformer>
 							</transformers>
 							<artifactSet>

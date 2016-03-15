@@ -2,12 +2,17 @@ package clique.verticles;
 
 import static com.rethinkdb.RethinkDB.r;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import com.github.scribejava.apis.FacebookApi;
 import com.github.scribejava.core.builder.ServiceBuilder;
@@ -19,6 +24,7 @@ import clique.config.DBConfig;
 import clique.config.FacebookConfig;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Handler;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
@@ -33,23 +39,52 @@ public class FacebookAuthenticate extends AbstractVerticle {
 	@Override
 	public void start() throws Exception {
 		Router router = Router.router(vertx);
-		router.get("/").handler(index());
+		router.get("/").handler(staticFile("index.html", "text/html"));
 		router.get("/logo.png").handler(image());
-		router.get("/privacy-policy").handler(privacyPolicy());
+		router.get("/style.css").handler(staticFile("style.css", "text/css"));
+		router.get("/changes.js").handler(staticFile("changes.js", "text/javascript"));
+		router.get("/privacy-policy").handler(staticFile("terms.html", "text/html"));
 		router.get("/auth/facebook").handler(authenticate());
 		router.get("/auth/facebook/callback").handler(startFetching());
 		router.get("/show/:id").handler(show());
 		router.get("/changes/:id").handler(changes());
-		router.route().handler(StaticHandler.create("src/main/resources"));
 		vertx.createHttpServer().requestHandler(router::accept).listen(9000);
+	}
+
+	private Handler<RoutingContext> image() {
+		return rc -> {
+			InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("logo.png");
+			rc.response().setChunked(true);
+			rc.response().putHeader("Content-Type", "image/png");
+
+			try {
+				while (resourceAsStream.available() > 0) {
+					byte[] x = new byte[resourceAsStream.available()];
+					resourceAsStream.read(x);
+					rc.response().write(Buffer.buffer(x));
+				}
+			} catch (Exception e) {
+				throw new RuntimeException();
+			}
+
+			rc.response().end();
+		};
+	}
+
+	private String getFile(String file) {
+		InputStream input = this.getClass().getClassLoader().getResourceAsStream(file);
+		try (BufferedReader buffer = new BufferedReader(new InputStreamReader(input))) {
+			return buffer.lines().collect(Collectors.joining("\n"));
+		} catch (Exception e) {
+			return "";
+		}
 	}
 
 	private Handler<RoutingContext> show() {
 		return rc -> {
 			String userId = rc.request().getParam("id");
 			try {
-				String file = Files.readAllLines(Paths.get("src/main/resources/thanks.html")).stream()
-						.collect(Collectors.joining("\n"));
+				String file = getFile("thanks.html");
 				String newFile = file.replaceAll("\\{\\{USER_ID\\}\\}", userId);
 				rc.response().putHeader("Content-Length", String.valueOf(newFile.length())).putHeader("Content-Type", "text/html").write(newFile).end();
 			} catch (Exception e) {
@@ -89,21 +124,10 @@ public class FacebookAuthenticate extends AbstractVerticle {
 		};
 	}
 
-	private Handler<RoutingContext> image() {
+	private Handler<RoutingContext> staticFile(String file, String type) {
+		String fileContents = getFile(file);
 		return rc -> {
-			rc.response().putHeader("Content-Type", "image/png").sendFile("src/main/resources/logo.png");
-		};
-	}
-
-	private Handler<RoutingContext> privacyPolicy() {
-		return rc -> {
-			rc.response().putHeader("Content-Type", "text/html").sendFile("src/main/resources/terms.html");
-		};
-	}
-
-	public Handler<RoutingContext> index() {
-		return rc -> {
-			rc.response().putHeader("Content-Type", "text/html").sendFile("src/main/resources/index.html");
+			rc.response().putHeader("Content-Type", type).end(fileContents);
 		};
 	}
 
