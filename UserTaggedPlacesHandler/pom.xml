@@ -5,6 +5,9 @@
     <artifactId>clique</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
+	<properties>
+		<main.verticle>clique.verticles.UserTaggedPlacesHandler</main.verticle>
+	</properties>
   <artifactId>UserTaggedPlacesHandler</artifactId>
   <name>UserTaggedPlacesHandler</name>
   <dependencies>
