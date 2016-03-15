@@ -1,32 +1,29 @@
 package clique.verticles;
 
-import static com.rethinkdb.RethinkDB.r;
-
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
+import clique.config.DBConfig;
+import clique.config.FacebookConfig;
 import com.github.scribejava.apis.FacebookApi;
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.oauth.OAuthService;
 import com.rethinkdb.gen.ast.ReqlExpr;
-
-import clique.config.DBConfig;
-import clique.config.FacebookConfig;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Handler;
-import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.StaticHandler;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static com.rethinkdb.RethinkDB.r;
 
 /**
  * Providing Facebook Login capabilities over HTTP
