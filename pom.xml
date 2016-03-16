@@ -13,6 +13,16 @@
 	
 
 	<build>
+		<resources>
+			<resource>
+				<directory>.</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>webroot/**</include>
+				</includes>
+			</resource>
+		</resources>
+
 		<pluginManagement>
 			<plugins>
 				<!-- We specify the Maven compiler plugin as we need to set it to Java 
