@@ -1,4 +1,4 @@
-Clique: find your matches
+[Clique](https://clique.hagever.com): find your matches
 -------------------------
 
 ![Clique](https://clique.hagever.com/logo.png)
