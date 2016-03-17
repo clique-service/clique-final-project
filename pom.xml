@@ -10,6 +10,14 @@
 	<properties>
 		<main.verticle>Test</main.verticle>
 	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>io.vertx</groupId>
+			<artifactId>vertx-hazelcast</artifactId>
+			<version>3.2.1</version>
+		</dependency>
+	</dependencies>
 	
 
 	<build>
