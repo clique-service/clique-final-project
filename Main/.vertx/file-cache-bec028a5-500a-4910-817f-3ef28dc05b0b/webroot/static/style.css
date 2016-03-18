@@ -1,0 +1,50 @@
+.logo {
+    height: 10em;
+    width: 10em;
+    display: block;
+    margin: auto;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#users {
+    display: flex;
+}
+
+.user {
+    flex: 1;
+    text-align: center;
+    padding: 1em;
+}
+
+.profile-picture {
+    text-align: center;
+    width: 150px;
+    height: 150px;
+    margin: auto;
+    border-radius: 50%;
+}
+
+.details {
+    display: block;
+    text-align: center;
+}
+
+.name {
+    display: block;
+    text-align: center;
+    font-weight: bolder;
+}
+
+.rotate {
+    -webkit-animation:spin 4s linear infinite;
+    -moz-animation:spin 4s linear infinite;
+    animation:spin 4s linear infinite;
+}
+@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
