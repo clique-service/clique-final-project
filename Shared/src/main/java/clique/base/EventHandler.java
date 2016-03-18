@@ -9,17 +9,18 @@ import com.rethinkdb.gen.ast.ReqlExpr;
 
 import clique.base.Handler;
 import clique.config.DBConfig;
+import clique.helpers.MessageBus;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
 public abstract class EventHandler extends Handler {
 	@Override
-	public void save(JsonObject data, Message<JsonObject> message) {
+	public void save(JsonObject data, JsonObject message) {
 		JsonArray jsonArray = data.getJsonArray("data");
 		int size = jsonArray.size();
-		String place = message.body().getString("place");
-		String eventId = message.body().getString("eventId");
+		String place = message.getString("place");
+		String eventId = message.getString("eventId");
 		List<String> places = new ArrayList<>();
 
 		if (place != null && !place.isEmpty()) {
@@ -47,14 +48,14 @@ public abstract class EventHandler extends Handler {
 			});
 
 			nextHandler(data, message);
-		} 
+		}
 	}
 
 	abstract public String getField();
 
 	@Override
-	public String getQuery(Message<JsonObject> message) {
-		String eventId = message.body().getString("eventId");
+	public String getQuery(JsonObject message) {
+		String eventId = message.getString("eventId");
 		String string = eventId + "/" + getField() + "?fields=id,name";
 		return string;
 	}

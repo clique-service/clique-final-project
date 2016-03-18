@@ -18,13 +18,13 @@ public class UserEventsHandler extends Handler {
 	}
 
 	@Override
-	public String getQuery(Message<JsonObject> message) {
-		String userId = message.body().getString("userId");
+	public String getQuery(JsonObject message) {
+		String userId = message.getString("userId");
 		return userId + "/events?fields=id,name,place";
 	}
 
 	@Override
-	public void save(JsonObject data, Message<JsonObject> message) {
+	public void save(JsonObject data, JsonObject message) {
 		JsonArray jsonArray = data.getJsonArray("data");
 		int size = jsonArray.size();
 
@@ -34,7 +34,7 @@ public class UserEventsHandler extends Handler {
 		if (size != 0) {
 			jsonArray.stream().forEach(event -> {
 				String eventId = ((JsonObject) event).getString("id");
-				String accessToken = message.body().getString("accessToken");
+				String accessToken = message.getString("accessToken");
 				eventsIds.add(eventId);
 
 				JsonObject eventData = new JsonObject();
@@ -52,16 +52,16 @@ public class UserEventsHandler extends Handler {
 				eventData.put("eventId", eventId);
 				eventData.put("after", "");
 
-				vertx.eventBus().send("eventAttendees", eventData);
-				vertx.eventBus().send("eventInteresteds", eventData);
-				vertx.eventBus().send("eventMaybes", eventData);
+				bus.send("eventAttendees", eventData);
+				bus.send("eventInteresteds", eventData);
+				bus.send("eventMaybes", eventData);
 			});
 
-			DBConfig.execute(r.table("Users").get(message.body().getString("userId"))
+			DBConfig.execute(r.table("Users").get(message.getString("userId"))
 					.update(user -> r.hashMap("events", user.g("events").add(eventsIds).distinct())));
 
 			if (eventsPlaces != null && !eventsPlaces.isEmpty()) {
-				DBConfig.execute(r.table("Users").get(message.body().getString("userId"))
+				DBConfig.execute(r.table("Users").get(message.getString("userId"))
 						.update(user -> r.hashMap("places", user.g("places").add(eventsPlaces).distinct())));
 			}
 
@@ -70,7 +70,7 @@ public class UserEventsHandler extends Handler {
 		else
 		{
 			System.out.println("finish " + getHandlerName());
-			vertx.eventBus().send("finishedEvents: " + message.body().getString("userId"), "");
+			bus.send("finishedEvents: " + message.getString("userId"), new JsonObject());
 		}
 	}
 }

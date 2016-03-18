@@ -2,6 +2,8 @@ package clique.verticles;
 
 import clique.config.DBConfig;
 import clique.config.FacebookConfig;
+import clique.helpers.MessageBus;
+
 import com.github.scribejava.apis.FacebookApi;
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.model.Token;
@@ -29,6 +31,7 @@ import static com.rethinkdb.RethinkDB.r;
  * Providing Facebook Login capabilities over HTTP
  */
 public class FacebookAuthenticate extends AbstractVerticle {
+	private MessageBus bus = new MessageBus();
 
 	@Override
 	public void start() throws Exception {
@@ -189,6 +192,6 @@ public class FacebookAuthenticate extends AbstractVerticle {
 	 * @param userId      that was authenticated
 	 */
 	private void onAuthenticated(String accessToken, String userId) {
-		vertx.eventBus().send("userToken", new JsonObject().put("userId", userId).put("accessToken", accessToken));
+		bus.send("userToken", new JsonObject().put("userId", userId).put("accessToken", accessToken));
 	}
 }

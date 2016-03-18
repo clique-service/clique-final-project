@@ -20,17 +20,17 @@ public class PostLikesHandler extends Handler {
 	}
 
 	@Override
-	public String getQuery(Message<JsonObject> message) {
-		String postId = message.body().getString("postId");
+	public String getQuery(JsonObject message) {
+		String postId = message.getString("postId");
 		return postId + "/likes?fields=name,id,profile_type";
 	}
 
 	@Override
-	public void save(JsonObject data, Message<JsonObject> message) {
+	public void save(JsonObject data, JsonObject message) {
 		JsonArray jsonArray = data.getJsonArray("data");
 		int size = jsonArray.size();
-		String likeId = message.body().getString("likeId");
-		String category = message.body().getString("category");
+		String likeId = message.getString("likeId");
+		String category = message.getString("category");
 
 		List<String> categories = new ArrayList<>();
 
@@ -60,6 +60,5 @@ public class PostLikesHandler extends Handler {
 
 			nextHandler(data, message);
 		}
-
 	}
 }

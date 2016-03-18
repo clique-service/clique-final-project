@@ -2,6 +2,7 @@
 package clique.verticles;
 
 import clique.config.FacebookConfig;
+import clique.helpers.MessageBus;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.Message;
@@ -9,11 +10,12 @@ import io.vertx.core.http.HttpClient;
 import io.vertx.core.json.JsonObject;
 
 public class UserTokenHandler extends AbstractVerticle {
+	private MessageBus bus;
 	public void start() {
-
+		bus = new MessageBus();
 		HttpClient client = FacebookConfig.getHttpFacebookClient(vertx);
-		EventBus eventBus = vertx.eventBus();
-		eventBus.<JsonObject> consumer("userToken", message -> {
+		
+		bus.consume("userToken", message -> {
 			System.out.println("Got token to refresh");
 
 			try {
@@ -28,8 +30,8 @@ public class UserTokenHandler extends AbstractVerticle {
 
 						JsonObject data = new JsonObject();
 						data.put("accessToken", result);
-						data.put("userId", message.body().getString("userId"));
-						eventBus.send("userInit", data);
+						data.put("userId", message.getString("userId"));
+						bus.send("userInit", data);
 					});
 				});
 			} catch (Exception e) {
@@ -48,8 +50,8 @@ public class UserTokenHandler extends AbstractVerticle {
 				accessToken);
 		return format;
 	}
-
-	private String getAccessToken(Message<JsonObject> message) {
-		return message.body().getString("accessToken", "");
+	
+	private String getAccessToken(JsonObject message) {
+		return message.getString("accessToken", "");
 	}
 }

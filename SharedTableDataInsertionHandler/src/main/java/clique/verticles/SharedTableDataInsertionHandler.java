@@ -5,26 +5,33 @@ import static com.rethinkdb.RethinkDB.r;
 import com.rethinkdb.gen.ast.ReqlExpr;
 
 import clique.config.DBConfig;
+import clique.helpers.MessageBus;
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.json.JsonObject;
 
 public class SharedTableDataInsertionHandler extends AbstractVerticle {
+	private MessageBus bus;
+
 	public String getHandlerName() {
 		return "sharedTableDataInsertion";
 	}
 
 	public void start() {
-		vertx.eventBus().<String>consumer(getHandlerName(), message -> {
-			String userId = message.body();
+		bus = new MessageBus();
+
+		bus.consume(getHandlerName(), message -> {
+			String userId = message.getString("userId");
 			String tableName = userId + "Shared";
 
 			vertx.executeBlocking(future -> {
 				ReqlExpr dataToShare = r.table("Users").get(userId).do_(user -> {
-					return r.table("Users").getAll(r.args(user.g("events"))).optArg("index", "events").union(
-							r.table("Users").getAll(r.args(user.g("likes"))).optArg("index", "likes"),
-							r.table("Users").getAll(r.args(user.g("places"))).optArg("index", "places"),
-							r.table("Users").getAll(r.args(user.g("categories"))).optArg("index", "categories")
-					).filter(otherUser -> {
-						return otherUser.g("id").eq(user.g("id")).not().and(r.table(tableName).get(otherUser.g("id")).default_(false).not());
+					return r.table("Users").getAll(r.args(user.g("events"))).optArg("index", "events")
+							.union(r.table("Users").getAll(r.args(user.g("likes"))).optArg("index", "likes"),
+									r.table("Users").getAll(r.args(user.g("places"))).optArg("index", "places"),
+									r.table("Users").getAll(r.args(user.g("categories"))).optArg("index", "categories"))
+							.filter(otherUser -> {
+						return otherUser.g("id").eq(user.g("id")).not()
+								.and(r.table(tableName).get(otherUser.g("id")).default_(false).not());
 					}).map(otherUser -> {
 						return r.hashMap().with("id", otherUser.g("id")).with("name", otherUser.g("name"))
 								.with("events", getIntersection("events", user, otherUser))
@@ -43,7 +50,7 @@ public class SharedTableDataInsertionHandler extends AbstractVerticle {
 
 				DBConfig.execute(r.tableDrop(tableName));
 				future.complete();
-			}, false, res -> {
+			} , false, res -> {
 				System.out.println("Finish shared result");
 			});
 		});
