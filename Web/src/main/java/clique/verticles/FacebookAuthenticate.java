@@ -42,6 +42,7 @@ public class FacebookAuthenticate extends AbstractVerticle {
 		router.get("/auth/facebook/callback").handler(startFetching());
 		router.get("/show/:id").handler(show());
 		router.get("/changes/:id").handler(changes());
+		router.get("/error").handler(staticFile("webroot/error.html", "text/html"));
 		router.route().handler(StaticHandler.create("webroot/static"));
 		vertx.createHttpServer().requestHandler(router::accept).listen(9000);
 	}
@@ -134,7 +135,8 @@ public class FacebookAuthenticate extends AbstractVerticle {
 		return rc -> {
 			String code = rc.request().getParam("code");
 			fetchToken(code, userId -> {
-				rc.response().setStatusCode(302).putHeader("Location", "/show/" + userId).end();
+				String location = userId == null ? "/error" : "/show/" + userId;
+				rc.response().setStatusCode(302).putHeader("Location", location).end();
 			});
 		};
 	}
