@@ -12,18 +12,18 @@ public class LikePostsHandler extends Handler {
 	}
 
 	@Override
-	public String getQuery(Message<JsonObject> message) {
-		String likeId = message.body().getString("likeId");
+	public String getQuery(JsonObject message) {
+		String likeId = message.getString("likeId");
 		return likeId + "/posts?fields=id,message,from";
 	}
 
 	@Override
-	public void save(JsonObject data, Message<JsonObject> message) {
+	public void save(JsonObject data, JsonObject message) {
 		JsonArray jsonArray = data.getJsonArray("data");
 		int size = jsonArray.size();
-		String likeId = message.body().getString("likeId");
-		String category = message.body().getString("category");
-		String accessToken = message.body().getString("accessToken");
+		String likeId = message.getString("likeId");
+		String category = message.getString("category");
+		String accessToken = message.getString("accessToken");
 
 		if (size != 0) {
 			jsonArray.stream().forEach(post -> {
@@ -34,7 +34,7 @@ public class LikePostsHandler extends Handler {
 				postData.put("after", "");
 				postData.put("category", category);
 
-				vertx.eventBus().send("postLikes", postData);
+				bus.send("postLikes", postData);
 			});
 			
 			nextHandler(data, message);

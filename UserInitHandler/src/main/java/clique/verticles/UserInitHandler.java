@@ -8,20 +8,23 @@ import clique.config.DBConfig;
 import clique.config.FacebookConfig;
 import clique.helpers.FinishChecker;
 import clique.helpers.JsonToPureJava;
+import clique.helpers.MessageBus;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
 public class UserInitHandler extends AbstractVerticle {
+	private MessageBus bus;
 	public void start() {
+		bus = new MessageBus();
+		
 		HttpClient client = FacebookConfig.getHttpFacebookClient(vertx);
-
-		vertx.eventBus().<JsonObject> consumer("userInit", message -> {
+		bus.consume("userInit", message -> {
 			System.out.println("Initializing user data");
 
-			String accessToken = message.body().getString("accessToken");
-			String userId = message.body().getString("userId");
+			String accessToken = message.getString("accessToken");
+			String userId = message.getString("userId");
 
 			client.getNow(initUserQuery(userId, accessToken), response -> {
 				response.bodyHandler(body -> {
@@ -32,20 +35,20 @@ public class UserInitHandler extends AbstractVerticle {
 					data.put("userId", userId);
 					data.put("after", "");
 
-					vertx.eventBus().send("userLikes", data);
-					vertx.eventBus().send("userEvents", data);
-					vertx.eventBus().send("userTaggedPlaces", data);
+					bus.send("userLikes", data);
+					bus.send("userEvents", data);
+					bus.send("userTaggedPlaces", data);
 
 					FinishChecker isFinish = new FinishChecker();
-					vertx.eventBus().consumer("finishedLikes: " + userId, likesMessage -> {
+					bus.consume("finishedLikes: " + userId, likesMessage -> {
 						isFinish.setLikes(true);
 						isAllDone(isFinish, userId);
 					});
-					vertx.eventBus().consumer("finishedTaggedPlaces: " + userId, taggedPlacesMessage -> {
+					bus.consume("finishedTaggedPlaces: " + userId, taggedPlacesMessage -> {
 						isFinish.setTaggedPlaces(true);
 						isAllDone(isFinish, userId);
 					});
-					vertx.eventBus().consumer("finishedEvents: " + userId, eventsMessage -> {
+					bus.consume("finishedEvents: " + userId, eventsMessage -> {
 						isFinish.setEvents(true);
 						isAllDone(isFinish, userId);
 					});
@@ -56,7 +59,7 @@ public class UserInitHandler extends AbstractVerticle {
 
 	private void isAllDone(FinishChecker checker, String userId) {
 		if (checker.isAllDone()) {
-			vertx.eventBus().send("sharedTableDataInsertion", userId);
+			bus.send("sharedTableDataInsertion", new JsonObject().put("userId", userId));
 		}
 	}
 

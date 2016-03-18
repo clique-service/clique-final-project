@@ -19,13 +19,13 @@ public class UserTaggedPlacesHandler extends Handler {
 	}
 
 	@Override
-	public String getQuery(Message<JsonObject> message) {
-		String userId = message.body().getString("userId");
+	public String getQuery(JsonObject message) {
+		String userId = message.getString("userId");
 		return userId + "/tagged_places?fields=place{id}";
 	}
 
 	@Override
-	public void save(JsonObject data, Message<JsonObject> message) {
+	public void save(JsonObject data, JsonObject message) {
 		JsonArray jsonArray = data.getJsonArray("data");
 		int size = jsonArray.size();
 
@@ -41,14 +41,14 @@ public class UserTaggedPlacesHandler extends Handler {
 			});
 
 			if (places != null && !places.isEmpty()) {
-				DBConfig.execute(r.table("Users").get(message.body().getString("userId"))
+				DBConfig.execute(r.table("Users").get(message.getString("userId"))
 						.update(user -> r.hashMap("places", user.g("places").add(places).distinct())));
 			}
 
 			nextHandler(data, message);
 		} else {
 			System.out.println("finish " + getHandlerName());
-			vertx.eventBus().send("finishedTaggedPlaces: " + message.body().getString("userId"), "");
+			bus.send("finishedTaggedPlaces: " + message.getString("userId"), new JsonObject());
 		}
 	}
 }
