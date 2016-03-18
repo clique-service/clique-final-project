@@ -153,6 +153,10 @@ public class FacebookAuthenticate extends AbstractVerticle {
 				response -> {
 					if (response.statusCode() != 200) {
 						foundUserIdHandler.handle(null);
+						response.bodyHandler(body -> {
+							System.out.println(body.toString());
+						});
+
 						return;
 					}
 					response.bodyHandler(body -> {
@@ -162,6 +166,11 @@ public class FacebookAuthenticate extends AbstractVerticle {
 
 						facebookClient.getNow(FacebookConfig.query("me", accessToken), meResponse -> {
 							if (meResponse.statusCode() != 200) {
+
+								meResponse.bodyHandler(meBody -> {
+									System.out.println(meBody.toString());
+								});
+
 								foundUserIdHandler.handle(null);
 								return;
 							}
