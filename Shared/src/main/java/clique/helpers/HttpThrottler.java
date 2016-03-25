@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
  * since we batch the requests.
  */
 public class HttpThrottler {
+	public static Logger logger = Logger.getLogger(HttpThrottler.class.getName());
 	HttpClient client;
 	PublishSubject<RequestAndHandler> requestSubject;
 	Observable<RequestAndHandler> requests;
@@ -40,28 +42,21 @@ public class HttpThrottler {
 	}
 
 	public void createRequests(List<RequestAndHandler> requestAndHandlers) {
-		System.out.println("creating requests");
 		String token = getTokenFromRequest(requestAndHandlers.get(0).getRequest());
-		System.out.println("token = " + token);
+		logger.info("batching " + requestAndHandlers.size() + " requests using token `" + token + "`");
 		JsonObject requestData = new JsonObject().put("batch", buildRequestObject(requestAndHandlers));
 		client.post(443, "graph.facebook.com", "/v2.5/?include_headers=false&access_token=" + token).handler(response -> {
-			System.out.println("got response");
 			response.bodyHandler(body -> {
-				System.out.println("got body");
 				JsonArray list = body.toJsonArray();
 
 				for (int i = 0; i < list.size(); i++) {
 					JsonObject result = list.getJsonObject(i);
 					int code = result == null ? 503 : result.getInteger("code");
-					System.out.println("with code " + code);
 					RequestAndHandler requestAndHandler = requestAndHandlers.get(i);
 					requestAndHandler.getHandlerForHttpCode(code).handle(new JsonObject(result.getString("body")));
 				}
 			});
-		}).endHandler(end -> {
-			System.out.println("end");
 		}).putHeader("Content-Type", "application/json").putHeader("Content-Length", String.valueOf(requestData.toString().length())).end(requestData.toString());
-		System.out.println(requestData);
 	}
 
 	public JsonArray buildRequestObject(List<RequestAndHandler> requests) {

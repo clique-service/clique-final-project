@@ -164,7 +164,7 @@ public class FacebookAuthenticate extends AbstractVerticle {
 						String accessToken = body.toJsonObject().getString("access_token");
 						System.out.println(accessToken);
 
-						facebookClient.getNow(FacebookConfig.query("me", accessToken), meResponse -> {
+						facebookClient.getNow(FacebookConfig.query("/v2.5/me", accessToken), meResponse -> {
 							if (meResponse.statusCode() != 200) {
 
 								meResponse.bodyHandler(meBody -> {

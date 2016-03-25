@@ -1,10 +1,13 @@
 package clique.config;
 
+import clique.helpers.HttpThrottler;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
 
 public class FacebookConfig {
+	private static HttpThrottler throttler;
+
 	public static String appId() {
 		String appId = System.getenv("FACEBOOK_APP_ID");
 
@@ -38,7 +41,15 @@ public class FacebookConfig {
 	public static String query(String query, String accessToken) {
 		String sep = query.contains("?") ? "&" : "?";
 
-		return "/v2.5/" + query + sep + "access_token=" + accessToken;
+		return query + sep + "access_token=" + accessToken;
+	}
+
+	public static HttpThrottler getThrottler(Vertx vertx) {
+		if (throttler == null) {
+			throttler = new HttpThrottler(getHttpFacebookClient(vertx), 25, 200);
+		}
+
+		return throttler;
 	}
 
 	public static String scope() {

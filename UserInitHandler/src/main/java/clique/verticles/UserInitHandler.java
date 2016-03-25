@@ -2,6 +2,7 @@ package clique.verticles;
 
 import static com.rethinkdb.RethinkDB.r;
 
+import clique.helpers.HttpThrottler;
 import com.rethinkdb.gen.ast.ReqlExpr;
 
 import clique.config.DBConfig;
@@ -18,17 +19,17 @@ public class UserInitHandler extends AbstractVerticle {
 	private MessageBus bus;
 	public void start() {
 		bus = new MessageBus();
-		
-		HttpClient client = FacebookConfig.getHttpFacebookClient(vertx);
+
+		HttpThrottler throttler = FacebookConfig.getThrottler(vertx);
+
 		bus.consume("userInit", message -> {
 			System.out.println("Initializing user data");
 
 			String accessToken = message.getString("accessToken");
 			String userId = message.getString("userId");
 
-			client.getNow(initUserQuery(userId, accessToken), response -> {
-				response.bodyHandler(body -> {
-					saveUser(body.toJsonObject());
+			throttler.throttle(initUserQuery(userId, accessToken), body -> {
+					saveUser(body);
 
 					JsonObject data = new JsonObject();
 					data.put("accessToken", accessToken);
@@ -52,7 +53,9 @@ public class UserInitHandler extends AbstractVerticle {
 						isFinish.setEvents(true);
 						isAllDone(isFinish, userId);
 					});
-				});
+				}, err -> {
+				System.out.println("Error!");
+				System.out.println(err);
 			});
 		});
 	}
