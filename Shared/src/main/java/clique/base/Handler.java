@@ -24,7 +24,7 @@ public abstract class Handler extends AbstractVerticle {
 			throttler.throttle(paging(message), body -> {
 				save(body, message);
 			}, err -> {
-				System.out.println("error occured on " + this.getClass().getSimpleName());
+				System.out.println("error occurred while fetching data for " + this.getClass().getSimpleName());
 				System.out.println(err);
 			});
 		});
