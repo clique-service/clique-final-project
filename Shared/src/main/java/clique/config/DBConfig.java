@@ -5,8 +5,10 @@ import com.rethinkdb.gen.ast.ReqlExpr;
 import com.rethinkdb.net.Connection;
 
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Logger;
 
 public class DBConfig {
+	private final static Logger logger = Logger.getLogger(DBConfig.class.getName());
 	private final static String hostname = "127.0.0.1";
 	private final static int port = 28015;
 	private final static String dbName = "test";
@@ -44,11 +46,13 @@ public class DBConfig {
 	}
 
 	public static Connection get() {
+		String url = hostname() + ":" + port() + "/" + dbName();
 		try {
-			//System.out.println(hostname() + ":" + port() + "/" + dbName());
+			logger.info("Creating a connection to " + url);
 			return r.connection().hostname(hostname()).port(port()).db(dbName()).connect();
-		} catch (TimeoutException e) {
-			throw new RuntimeException();
+		} catch (Exception e) {
+			logger.severe("Could not initiate connection to " + url + "! is the db on??");
+			throw new RuntimeException(e);
 		}
 	}
 

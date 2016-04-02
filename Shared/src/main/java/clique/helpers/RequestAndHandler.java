@@ -9,6 +9,15 @@ import io.vertx.core.json.JsonObject;
 public class RequestAndHandler {
 	String request;
 	Handler<JsonObject> handler;
+	Handler<JsonObject> errorHandler;
+
+	public Handler<JsonObject> getHandlerForHttpCode(int code) {
+		if (code == 200) {
+			return this.getHandler();
+		} else {
+			return this.getErrorHandler();
+		}
+	}
 
 	public String getRequest() {
 		return request;
@@ -26,5 +35,14 @@ public class RequestAndHandler {
 	public RequestAndHandler setHandler(Handler<JsonObject> handler) {
 		this.handler = handler;
 		return this;
+	}
+
+	public RequestAndHandler setErrorHandler(Handler<JsonObject> errorHandler) {
+		this.errorHandler = errorHandler;
+		return this;
+	}
+
+	public Handler<JsonObject> getErrorHandler() {
+		return errorHandler;
 	}
 }

@@ -1,6 +1,7 @@
 package clique.base;
 
 import clique.config.FacebookConfig;
+import clique.helpers.HttpThrottler;
 import clique.helpers.MessageBus;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.eventbus.EventBus;
@@ -17,16 +18,14 @@ public abstract class Handler extends AbstractVerticle {
 
 	public void start() {
 		bus = new MessageBus();
-		
-		HttpClient client = FacebookConfig.getHttpFacebookClient(vertx);
+
+		HttpThrottler throttler = FacebookConfig.getThrottler(vertx);
 		bus.consume(getHandlerName(), message -> {
-			client.getNow(paging(message), response -> {
-				if (response.statusCode() != 200)
-				{
-					return;
-				}
-				
-				response.bodyHandler(body -> save(body.toJsonObject(), message));
+			throttler.throttle(paging(message), body -> {
+				save(body, message);
+			}, err -> {
+				System.out.println("error occurred while fetching data for " + this.getClass().getSimpleName());
+				System.out.println(err);
 			});
 		});
 	}
