@@ -6,6 +6,7 @@ import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import rx.Observable;
+import rx.functions.Func1;
 import rx.subjects.PublishSubject;
 
 import java.util.Arrays;
@@ -33,12 +34,15 @@ public class HttpThrottler {
 	}
 
 	public HttpThrottler(HttpClient client, int buffer, int timeoutInMilliseconds) {
+		logger.info("Creating HttpThrottler...");
 		this.client = client;
 		this.requestSubject = PublishSubject.create();
 		this.requests = this.requestSubject.asObservable();
 
+		Func1<List<RequestAndHandler>, Boolean> moreThanOne = requestAndHandlers -> requestAndHandlers.size() >= 1;
 		Observable<List<RequestAndHandler>> bufferedRequests = this.requests.buffer(timeoutInMilliseconds, TimeUnit.MILLISECONDS, buffer);
-		bufferedRequests.filter(requestAndHandlers -> requestAndHandlers.size() >= 1).subscribe(this::createRequests);
+
+		bufferedRequests.filter(moreThanOne).subscribe(this::createRequests);
 	}
 
 	public void createRequests(List<RequestAndHandler> requestAndHandlers) {
