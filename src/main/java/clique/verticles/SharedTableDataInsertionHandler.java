@@ -1,14 +1,23 @@
 package clique.verticles;
 
+import static com.rethinkdb.RethinkDB.r;
+
+import java.util.Map;
+import java.util.TreeSet;
+
+import com.rethinkdb.gen.ast.ReqlExpr;
+import com.rethinkdb.net.Connection;
+import com.rethinkdb.net.Cursor;
+
 import clique.config.DBConfig;
 import clique.helpers.MessageBus;
-import com.rethinkdb.gen.ast.ReqlExpr;
+import clique.helpers.UserResult;
 import io.vertx.core.AbstractVerticle;
-
-import static com.rethinkdb.RethinkDB.r;
 
 public class SharedTableDataInsertionHandler extends AbstractVerticle {
 	private MessageBus bus;
+
+	public static TreeSet<UserResult> result = new TreeSet<>();
 
 	public String getHandlerName() {
 		return "sharedTableDataInsertion";
@@ -36,15 +45,39 @@ public class SharedTableDataInsertionHandler extends AbstractVerticle {
 								.with("likes", getIntersection("likes", user, otherUser))
 								.with("places", getIntersection("places", user, otherUser))
 								.with("categories", getIntersection("categories", user, otherUser));
-					});
+					}).map(resultUser -> resultUser
+							.merge(r.hashMap("rating", resultUser.g("events").mul(5).add(resultUser.g("likes").mul(3))
+									.add(resultUser.g("places").mul(2)).add(resultUser.g("categories").mul(2)))));
 				});
 
-				DBConfig.execute(r.table(tableName).insert(dataToShare).optArg("conflict", "replace"));
+				Connection connection = DBConfig.get();
+				Cursor<Map<String, Object>> cursor = dataToShare.run(connection);
 
-				ReqlExpr sortedResults = r.table(tableName).orderBy().optArg("index", r.desc("rating")).limit(5)
-						.coerceTo("array");
-				DBConfig.execute(r.table("CliqueResults").insert(
-						r.hashMap().with("userId", userId).with("date", r.now()).with("results", sortedResults)));
+				cursor.forEach(x -> {
+					result.add(UserResult.parse(x));
+				//	DBConfig.execute(r.table(tableName).insert(x).optArg("conflict", "replace"));
+					
+					if (x.get("name").equals("gal schlezinger"))
+					{
+						System.out.println(x.get("rating"));
+					}
+					
+					if (result.size() > 5) {
+						result.pollFirst();
+					}
+				});
+				
+				connection.close();
+
+				// DBConfig.execute(r.table(tableName).insert(dataToShare).optArg("conflict",
+				// "replace"));
+
+				// ReqlExpr sortedResults =
+				// r.table(tableName).orderBy().optArg("index",
+				// r.desc("rating")).limit(5)
+				// .coerceTo("array");
+				DBConfig.execute(r.table("CliqueResults")
+						.insert(r.hashMap().with("userId", userId).with("date", r.now()).with("results", result.toArray())));
 
 				DBConfig.execute(r.tableDrop(tableName));
 				future.complete();
