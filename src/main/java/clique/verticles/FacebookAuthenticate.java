@@ -78,8 +78,10 @@ public class FacebookAuthenticate extends AbstractVerticle {
 			JsonObject jsonObject = new JsonObject();
 			String userId = rc.request().params().get("id");
 			boolean userExists = DBConfig.execute(r.table("Users").contains(user -> user.g("id").eq(userId)));
+			String jsonString = "user not exsits";
 
 			if (userExists) {
+				jsonString = "ok";
 				createChangesTable(userId);
 				bus.send("sharedTableDataInsertion", new JsonObject().put("userId", userId));
 
@@ -94,8 +96,6 @@ public class FacebookAuthenticate extends AbstractVerticle {
 					}
 				}
 			}
-
-			String jsonString = jsonObject.toString();
 			rc.response().putHeader("Content-Type", "application/json").end(jsonString);
 		};
 	}
