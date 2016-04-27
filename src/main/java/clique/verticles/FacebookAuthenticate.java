@@ -38,7 +38,7 @@ public class FacebookAuthenticate extends AbstractVerticle {
 		router.get("/").handler(staticFile("webroot/index.html", "text/html"));
 		router.get("/privacy-policy").handler(staticFile("webroot/terms.html", "text/html"));
 		router.get("/auth/facebook").handler(authenticate());
-		router.get("/auth/facebook/callback").handler(startFetching());
+		router/**/.get("/auth/facebook/callback").handler(startFetching());
 		router.get("/show/:id").handler(show());
 		router.get("/changes/:id").handler(changes());
 		router.get("/error").handler(staticFile("webroot/error.html", "text/html"));

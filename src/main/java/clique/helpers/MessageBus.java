@@ -1,11 +1,18 @@
 package clique.helpers;
 
-import com.rabbitmq.client.*;
-import io.vertx.core.Handler;
-import io.vertx.core.json.JsonObject;
-
 import java.io.Closeable;
 import java.io.IOException;
+
+import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.Consumer;
+import com.rabbitmq.client.DefaultConsumer;
+import com.rabbitmq.client.Envelope;
+
+import io.vertx.core.Handler;
+import io.vertx.core.json.JsonObject;
 
 public class MessageBus implements Closeable {
 

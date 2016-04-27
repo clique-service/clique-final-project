@@ -1,28 +1,9 @@
-import clique.verticles.EventAttendeesHandler;
-import clique.verticles.EventInterestedsHandler;
-import clique.verticles.EventMaybesHandler;
-import clique.verticles.FacebookAuthenticate;
-import clique.verticles.LikePostsHandler;
-import clique.verticles.PostLikesHandler;
-import clique.verticles.SharedTableDataInsertionHandler;
-import clique.verticles.UserEventsHandler;
-import clique.verticles.UserInitHandler;
-import clique.verticles.UserLikesHandler;
-import clique.verticles.UserTaggedPlacesHandler;
-import clique.verticles.UserTokenHandler;
+import clique.verticles.*;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.Consumer;
-import com.rabbitmq.client.DefaultConsumer;
-import com.rabbitmq.client.Envelope;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
-
-import com.rabbitmq.client.AMQP;
-import com.rabbitmq.client.Channel;
 
 /**
  * Created by schniz and tom boldan on 05/02/2016.

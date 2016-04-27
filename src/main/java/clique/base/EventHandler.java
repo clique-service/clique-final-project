@@ -1,7 +1,7 @@
 package clique.base;
 
-import com.rethinkdb.gen.ast.ReqlExpr;
 import clique.config.DBConfig;
+import com.rethinkdb.gen.ast.ReqlExpr;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
