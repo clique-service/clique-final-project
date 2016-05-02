@@ -2,9 +2,14 @@ package clique.verticles;
 
 import static com.rethinkdb.RethinkDB.r;
 
+import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
+import com.rethinkdb.gen.ast.Insert;
 import com.rethinkdb.gen.ast.ReqlExpr;
 import com.rethinkdb.net.Connection;
 import com.rethinkdb.net.Cursor;
@@ -13,6 +18,8 @@ import clique.config.DBConfig;
 import clique.helpers.MessageBus;
 import clique.helpers.UserResult;
 import io.vertx.core.AbstractVerticle;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
 public class SharedTableDataInsertionHandler extends AbstractVerticle {
 	private MessageBus bus;
@@ -29,6 +36,16 @@ public class SharedTableDataInsertionHandler extends AbstractVerticle {
 		bus.consume(getHandlerName(), message -> {
 			String userId = message.getString("userId");
 			String tableName = userId + "Shared";
+
+			PublishSubject<List<UserResult>> saver = PublishSubject.create();
+			Observable<List<UserResult>> toSave$ = saver.asObservable();
+
+			toSave$.sample(5000, TimeUnit.MILLISECONDS).subscribe(lastResult -> {
+				if (lastResult == null) return;
+				ReqlExpr insert = r.table(tableName).insert(r.hashMap().with("id", userId).with("results", lastResult.toArray())).optArg("conflict", "replace");
+				DBConfig.execute(insert);
+				System.out.println("saved");
+			});
 
 			vertx.executeBlocking(future -> {
 				ReqlExpr dataToShare = r.table("Users").get(userId).do_(user -> {
@@ -55,18 +72,14 @@ public class SharedTableDataInsertionHandler extends AbstractVerticle {
 
 				cursor.forEach(x -> {
 					result.add(UserResult.parse(x));
-				//	DBConfig.execute(r.table(tableName).insert(x).optArg("conflict", "replace"));
-					
-					if (x.get("name").equals("gal schlezinger"))
-					{
-						System.out.println(x.get("rating"));
-					}
-					
+
 					if (result.size() > 5) {
 						result.pollFirst();
 					}
+
+					saver.onNext(result.stream().collect(Collectors.toList()));
 				});
-				
+
 				connection.close();
 
 				// DBConfig.execute(r.table(tableName).insert(dataToShare).optArg("conflict",

@@ -75,28 +75,33 @@ public class FacebookAuthenticate extends AbstractVerticle {
 
 	private Handler<RoutingContext> cluster() {
 		return rc -> {
-			JsonObject jsonObject = new JsonObject();
-			String userId = rc.request().params().get("id");
-			boolean userExists = DBConfig.execute(r.table("Users").contains(user -> user.g("id").eq(userId)));
-			String jsonString = "user not exsits";
+			new Thread() {
+				@Override
+				public void run() {
+					JsonObject jsonObject = new JsonObject();
+					String userId = rc.request().params().get("id");
+					boolean userExists = DBConfig.execute(r.table("Users").contains(user -> user.g("id").eq(userId)));
+					String jsonString = "user not exsits";
 
-			if (userExists) {
-				jsonString = "ok";
-				createChangesTable(userId);
-				bus.send("sharedTableDataInsertion", new JsonObject().put("userId", userId));
+					if (userExists) {
+						jsonString = "ok";
+						createChangesTable(userId);
+						bus.send("sharedTableDataInsertion", new JsonObject().put("userId", userId));
 
-				String tableName = userId + "Shared";
+						String tableName = userId + "Shared";
 
-				while (isTableExists(tableName)) {
-					try {
-						Thread.sleep(2000);
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						while (isTableExists(tableName)) {
+							try {
+								Thread.sleep(2000);
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
 					}
+					rc.response().putHeader("Content-Type", "application/json").end(jsonString);
 				}
-			}
-			rc.response().putHeader("Content-Type", "application/json").end(jsonString);
+			}.start();
 		};
 	}
 
@@ -107,8 +112,7 @@ public class FacebookAuthenticate extends AbstractVerticle {
 			String tableName = userId + "Shared";
 
 			if (isTableExists(tableName)) {
-				ReqlExpr sortedResults = r.table(tableName).orderBy().optArg("index", r.desc("rating")).limit(5)
-						.coerceTo("array");
+				ReqlExpr sortedResults = r.table(tableName).get(userId).g("results");
 				List results = DBConfig.execute(sortedResults);
 				jsonObject = new JsonObject().put("users", results).put("action",
 						results.size() < 1 ? "WAIT_NO_DATA" : "SHOW_USERS");
