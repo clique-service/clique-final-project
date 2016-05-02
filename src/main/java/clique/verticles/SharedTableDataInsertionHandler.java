@@ -37,6 +37,14 @@ public class SharedTableDataInsertionHandler extends AbstractVerticle {
 			String userId = message.getString("userId");
 			String tableName = userId + "Shared";
 
+			Boolean isCurrentlyRunning = DBConfig.execute(r.table(tableName).get("isRunning").g("isRunning").default_(false));
+
+			if (isCurrentlyRunning) {
+				return;
+			}
+
+			DBConfig.execute(r.table(tableName).insert(r.hashMap("id", "isRunning").with("isRunning", true)));
+
 			PublishSubject<List<UserResult>> saver = PublishSubject.create();
 			Observable<List<UserResult>> toSave$ = saver.asObservable();
 
