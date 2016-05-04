@@ -24,8 +24,6 @@ import rx.subjects.PublishSubject;
 public class SharedTableDataInsertionHandler extends AbstractVerticle {
 	private MessageBus bus;
 
-	public static TreeSet<UserResult> result = new TreeSet<>();
-
 	public String getHandlerName() {
 		return "sharedTableDataInsertion";
 	}
@@ -34,6 +32,8 @@ public class SharedTableDataInsertionHandler extends AbstractVerticle {
 		bus = new MessageBus();
 
 		bus.consume(getHandlerName(), message -> {
+			TreeSet<UserResult> result = new TreeSet<>();
+
 			String userId = message.getString("userId");
 			String tableName = userId + "Shared";
 
@@ -90,13 +90,6 @@ public class SharedTableDataInsertionHandler extends AbstractVerticle {
 
 				connection.close();
 
-				// DBConfig.execute(r.table(tableName).insert(dataToShare).optArg("conflict",
-				// "replace"));
-
-				// ReqlExpr sortedResults =
-				// r.table(tableName).orderBy().optArg("index",
-				// r.desc("rating")).limit(5)
-				// .coerceTo("array");
 				DBConfig.execute(r.table("CliqueResults")
 						.insert(r.hashMap().with("userId", userId).with("date", r.now()).with("results", result.toArray())));
 
