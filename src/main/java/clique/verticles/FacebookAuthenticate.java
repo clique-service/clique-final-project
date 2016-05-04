@@ -231,10 +231,7 @@ public class FacebookAuthenticate extends AbstractVerticle {
 		if (!Boolean.valueOf(DBConfig.execute(r.tableList().contains(tableName)).toString())) {
 			DBConfig.execute(r.tableCreate(tableName));
 
-			DBConfig.execute(r.table(tableName).insert(r.hashMap().with("id", userId).with("results", new String[] {})));
-
-			DBConfig.execute(r.table(tableName).indexCreate("rating", user -> user.g("events").mul(5)
-					.add(user.g("likes").mul(3)).add(user.g("places").mul(2)).add(user.g("categories").mul(2))));
+			DBConfig.execute(r.table(tableName).insert(r.hashMap().with("id", userId).with("results", new String[] {})).optArg("conflict", "replace"));
 		}
 	}
 
