@@ -12,11 +12,15 @@ function getID() {
   return window.USER_ID;
 }
 
+function icon(type) {
+    return $("<i />").addClass("fa").addClass("fa-" + type);
+}
+
 function handleData(data) {
     switch (data.action) {
         case ("FINISHED"): {
-            $("#results-title").text("Final Results:");
-            $("#logo").removeClass("rotate");
+            $("#logo").removeClass("rotate").addClass("results");
+            $("#first-part").removeClass("working").addClass("results");
             updateUsersDiv(data.users);
             break;
         }
@@ -25,6 +29,7 @@ function handleData(data) {
             break;
         }
         case ("SHOW_USERS"): {
+            $("#first-part").addClass("working");
             createTimeout();
             updateUsersDiv(data.users);
             break;
@@ -40,13 +45,25 @@ function callChanges() {
   getChanges().then(handleData);
 }
 
+function capitalize(x) {
+    return x.charAt(0).toUpperCase() + x.slice(1);
+}
+
+function capitalizeName(name) {
+    return name.split(" ").map(capitalize).join(" ");
+}
+
+function wrapWithIcon(text, type) {
+    return [icon(type), $("<span>").text(text)];
+}
+
 function buildUser(user) {
   var pic = $("<img>").addClass("profile-picture").attr("src", "//graph.facebook.com/" + user.id + "/picture?width=150&type=square");
-  var name = $("<span>").addClass("name").text(user.name);
-  var likes = $("<span>").addClass("details").addClass("likes").text("likes: " + user.likes);
-  var categories = $("<span>").addClass("details").addClass("categories").text("categories: " + user.categories);
-  var events = $("<span>").addClass("details").addClass("events").text("events: " + user.events);
-  var places = $("<span>").addClass("details").addClass("places").text("places: " + user.places);
+  var name = $("<span>").addClass("name").text(capitalizeName(user.name));
+  var likes = $("<span>").addClass("details").addClass("likes").append(wrapWithIcon(" likes: " + user.likes, 'thumbs-up'));
+  var categories = $("<span>").addClass("details").addClass("categories").append(wrapWithIcon("categories: " + user.categories, 'hashtag'));
+  var events = $("<span>").addClass("details").addClass("events").append(wrapWithIcon("events: " + user.events, 'calendar'));
+  var places = $("<span>").addClass("details").addClass("places").append(wrapWithIcon("places: " + user.places, 'map-marker'));
   var user = $("<div>").addClass("user").append(pic, name, likes, categories, events, places);
 
   return user;
