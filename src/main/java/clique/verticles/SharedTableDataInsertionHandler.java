@@ -4,6 +4,7 @@ import static com.rethinkdb.RethinkDB.r;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collector;
@@ -79,7 +80,16 @@ public class SharedTableDataInsertionHandler extends AbstractVerticle {
 				Cursor<Map<String, Object>> cursor = dataToShare.run(connection);
 
 				cursor.forEach(x -> {
-					result.add(UserResult.parse(x));
+					UserResult parsedResult = UserResult.parse(x);
+					Optional<UserResult> sameResult = result.stream().filter(e -> e.getId().equals(parsedResult.getId())).findFirst();
+
+					if (sameResult.isPresent() && sameResult.get().getRate() < parsedResult.getRate()) {
+						result.remove(sameResult.get());
+						result.add(parsedResult);
+					}
+					else if (!sameResult.isPresent()) {
+						result.add(parsedResult);
+					}
 
 					if (result.size() > 5) {
 						result.pollFirst();

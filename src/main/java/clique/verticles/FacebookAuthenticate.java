@@ -199,7 +199,6 @@ public class FacebookAuthenticate extends AbstractVerticle {
 						return;
 					}
 					response.bodyHandler(body -> {
-
 						String accessToken = body.toJsonObject().getString("access_token");
 						System.out.println(accessToken);
 
