@@ -50,7 +50,16 @@ public class MessageBus implements Closeable {
 						byte[] body) throws IOException {
 					String message = new String(body, "UTF-8");
 					JsonObject json = new JsonObject(message);
-					handler.handle(json);
+					new Thread() {
+						@Override
+						public void run() {
+							try {
+								handler.handle(json);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}.start();
 				}
 			};
 			channel.basicConsume(queueName, true, consumer);
