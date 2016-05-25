@@ -1,6 +1,6 @@
 .logo {
-    height: 10em;
-    width: 10em;
+    height: 8em;
+    width: 8em;
     display: block;
     margin: auto;
     transition: all 0.4s ease;
@@ -9,6 +9,7 @@
 }
 
 #current-soulmates {
+    font-family: 'Roboto Slab';
     display: none;
 }
 
@@ -25,13 +26,13 @@
     color: black;
     display: block;
     position: absolute;
-    top: -2em;
-    left: calc(50% - 7em);
+    top: -1em;
+    left: calc(50% - 5em);
     background-color: transparent;
-    width: 14em;
-    height: 14em;
+    width: 10em;
+    height: 10em;
     border-radius: 50%;
-    border: 0.9em solid;
+    border: 0.5em solid;
     border-left-color: #26a6e1;
     border-top-color: #26a6e1;
     border-right-color: #26a6e1;
@@ -48,6 +49,7 @@
     opacity: 0;
     transition: all 0.4s ease;
     font-size: 0em;
+    font-family: 'Roboto Slab';
 }
 
 .results #message-before, .results #results-title {
@@ -74,7 +76,6 @@
 
 body {
     font-family: 'Open Sans', sans-serif;
-    display: flex;
     align-items: center;
     justify-content: center;
     background: #f0f6ff;
@@ -93,7 +94,7 @@ body {
 
 #first-part {
     width: 100%;
-    padding: 3em;
+    padding: 3em 0 0 0;
     margin: 0em;
     background: #3C6A7F;
     color: #f0f6ff;
@@ -200,7 +201,7 @@ i {
     font-family: 'Open Sans', sans-serif;
     font-weight: 800;
     color: #26a6e1;
-    margin-top: 1em;
+    margin-top: 0.5em;
     text-shadow: 1px 1px 1px 1px (0,0,0,0.1);
     transition: all 0.4s ease;
 }
