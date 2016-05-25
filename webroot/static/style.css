@@ -148,6 +148,13 @@ body {
     display: block;
     text-align: center;
     font-weight: bolder;
+    
+    /* max width and ellipsis */
+    max-width: 16vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin: auto;
 }
 
 i {
