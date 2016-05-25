@@ -59,12 +59,13 @@ function wrapWithIcon(text, type) {
 
 function buildUser(user) {
   var pic = $("<img>").addClass("profile-picture").attr("src", "//graph.facebook.com/" + user.id + "/picture?width=150&type=square");
+  var link = $("<a>").addClass("profile-link").attr("href", "https://facebook.com/" + user.id).append(pic);
   var name = $("<span>").addClass("name").text(capitalizeName(user.name));
   var likes = $("<span>").addClass("details").addClass("likes").append(wrapWithIcon(" likes: " + user.likes, 'thumbs-up'));
   var categories = $("<span>").addClass("details").addClass("categories").append(wrapWithIcon("categories: " + user.categories, 'hashtag'));
   var events = $("<span>").addClass("details").addClass("events").append(wrapWithIcon("events: " + user.events, 'calendar'));
   var places = $("<span>").addClass("details").addClass("places").append(wrapWithIcon("places: " + user.places, 'map-marker'));
-  var user = $("<div>").addClass("user").append(pic, name, likes, categories, events, places);
+  var user = $("<div>").addClass("user").append(link, name, likes, categories, events, places);
 
   return user;
 }
