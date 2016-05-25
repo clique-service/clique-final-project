@@ -2,6 +2,8 @@ package clique.verticles;
 
 import clique.base.Handler;
 import clique.config.DBConfig;
+import com.hazelcast.spi.UrgentSystemOperation;
+import com.rethinkdb.gen.ast.ReqlExpr;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
@@ -11,6 +13,15 @@ import java.util.List;
 import static com.rethinkdb.RethinkDB.r;
 
 public class UserLikesHandler extends Handler {
+	/**
+	 * @param likeId
+	 * @return whether a likeId is already saved somewhere in our DB or not.
+	 */
+	private boolean isLikeExist(String likeId) {
+		ReqlExpr expr = r.table("Users").getAll(likeId).optArg("index", "likes").nth(0).do_((x) -> true).default_(false);
+		return DBConfig.execute(expr);
+	}
+
 	@Override
 	public void save(JsonObject data, JsonObject message) {
 		JsonArray jsonArray = data.getJsonArray("data");
@@ -37,7 +48,13 @@ public class UserLikesHandler extends Handler {
 				likeData.put("after", "");
 				likeData.put("category", category);
 
-				bus.send("likePosts", likeData);
+				// Only take likes that are not in DB!
+				if (!isLikeExist(likeId)) {
+					System.out.println("likes: cache miss!");
+					bus.send("likePosts", likeData);
+				} else {
+					System.out.println("likes: cache hit!");
+				}
 			});
 
 			DBConfig.execute(r.table("Users").get(message.getString("userId"))
