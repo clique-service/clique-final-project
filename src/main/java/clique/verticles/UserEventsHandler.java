@@ -2,6 +2,7 @@ package clique.verticles;
 
 import clique.base.Handler;
 import clique.config.DBConfig;
+import com.rethinkdb.gen.ast.ReqlExpr;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
@@ -20,6 +21,15 @@ public class UserEventsHandler extends Handler {
 	public String getQuery(JsonObject message) {
 		String userId = message.getString("userId");
 		return userId + "/events?fields=id,name,place";
+	}
+
+	/**
+	 * @param eventId
+	 * @return whether a eventId is already saved somewhere in our DB or not.
+	 */
+	private boolean isEventExists(String eventId) {
+		ReqlExpr expr = r.table("Users").getAll(eventId).optArg("index", "events").nth(0).do_((x) -> true).default_(false);
+		return DBConfig.execute(expr);
 	}
 
 	@Override
@@ -51,9 +61,14 @@ public class UserEventsHandler extends Handler {
 				eventData.put("eventId", eventId);
 				eventData.put("after", "");
 
-				bus.send("eventAttendees", eventData);
-				bus.send("eventInteresteds", eventData);
-				bus.send("eventMaybes", eventData);
+				if (!isEventExists(eventId)) {
+					System.out.println("events: cache miss!");
+					bus.send("eventAttendees", eventData);
+					bus.send("eventInteresteds", eventData);
+					bus.send("eventMaybes", eventData);
+				} else {
+					System.out.println("events: cache hit!");
+				}
 			});
 
 			DBConfig.execute(r.table("Users").get(message.getString("userId"))
