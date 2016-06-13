@@ -209,3 +209,7 @@ i {
 .results #clique {
     margin-top: 0;
 }
+
+.homepage {
+    display: flex !important;
+}
